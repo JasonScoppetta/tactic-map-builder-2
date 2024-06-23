@@ -23,12 +23,21 @@ export interface MapEditorOptions {
   value?: MapValue;
 }
 
+export interface AddSpotOptions {
+  groupId: string;
+  rowId?: string;
+  afterSpotId?: string;
+  beforeSpotId?: string;
+  type: SpotType;
+}
+
 export interface MapEditorMethods {
   moveGroup: (id: string, position: GroupPosition) => void;
   startDraggingGroup: (id: string) => void;
   endDraggingGroup: () => void;
   selectGroup: (id: string, appendSelection?: boolean) => void;
   clearSelection: () => void;
+  addSpot: (options: AddSpotOptions) => SpotItem;
 }
 
 export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
@@ -37,10 +46,13 @@ export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
   selectedGroups: Record<string, boolean>;
 }
 
+export type SpotType = "Desk" | "Blank";
+
 export interface SpotItem {
   id: string;
   paddingX?: number;
   paddingY?: number;
+  type: SpotType;
 }
 
 export interface SpotRow {
@@ -53,6 +65,7 @@ export interface SpotRow {
 
 export interface SpotGroup {
   id: string;
+  label?: string;
   rows: SpotRow[];
   paddingX?: number;
   paddingY?: number;

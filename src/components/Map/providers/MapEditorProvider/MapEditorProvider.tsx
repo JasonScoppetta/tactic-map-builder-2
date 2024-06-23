@@ -1,5 +1,11 @@
 import { MapEditorTools } from "@/components/Map/MapEditorTools";
-import { DraggingGuides, GroupPosition } from "@/types";
+import { getUuid } from "@/helpers/getUuid";
+import {
+  AddSpotOptions,
+  DraggingGuides,
+  GroupPosition,
+  SpotItem,
+} from "@/types";
 import React from "react";
 import { MapEditorContext, MapEditorProviderProps } from "./context";
 
@@ -109,6 +115,39 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     setSelectedGroups({});
   };
 
+  const addSpot = (options: AddSpotOptions) => {
+    const newSpot: SpotItem = {
+      id: getUuid(),
+      type: options.type,
+    } as SpotItem;
+
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        groups: prev.groups.map((group) => {
+          if (group.id === options.groupId) {
+            return {
+              ...group,
+              rows: group.rows.map((row) => {
+                if (row.id === options.rowId) {
+                  return {
+                    ...row,
+                    items: row.items.concat(newSpot),
+                  };
+                }
+                return row;
+              }),
+            };
+          }
+          return group;
+        }),
+      };
+    });
+
+    return newSpot;
+  };
+
   React.useEffect(() => {
     updateGroupsPositions();
   }, []);
@@ -123,6 +162,7 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         endDraggingGroup,
         selectGroup,
         clearSelection,
+        addSpot,
         draggingGroup,
         guides: draggingGuides,
         selectedGroups,

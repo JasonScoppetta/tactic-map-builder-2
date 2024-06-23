@@ -20,6 +20,7 @@ export const SpotGroupRow = React.forwardRef<SVGSVGElement, SpotGroupRowProps>(
             orientation={row.orientation}
             paddingX={item.paddingX}
             paddingY={item.paddingY}
+            spot={item}
           />
         ))}
       </g>

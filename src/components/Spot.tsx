@@ -1,3 +1,4 @@
+import { SpotItem } from "@/types";
 import * as React from "react";
 
 const spotWidth = 94;
@@ -9,6 +10,7 @@ export interface SpotProps {
   orientation?: "top" | "bottom";
   paddingY?: number;
   paddingX?: number;
+  spot: SpotItem;
 }
 export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
   const {
@@ -17,31 +19,40 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
     orientation = "top",
     paddingY = 1,
     paddingX = 1,
+    spot,
   } = props;
 
   const isBottom = orientation === "bottom";
 
   return (
     <g
+      className={"spot-item"}
+      data-spot-id={spot.id}
+      width={spotWidth}
+      height={90}
       ref={ref}
       transform={`translate(${x * spotWidth + (x > 0 ? paddingX * x : 0)}, ${y * 90 + (y > 0 ? paddingY * y : 0)})`}
     >
-      <rect
-        width={spotWidth}
-        height={spotHeight}
-        x={2}
-        y={isBottom ? 0 : 40}
-        fill="#C0F"
-        rx={2}
-      />
-      <circle
-        cx={47}
-        cy={isBottom ? 56 : 28}
-        r={28}
-        fill="#777"
-        stroke="#fff"
-        strokeWidth={8}
-      />
+      {spot.type === "Desk" && (
+        <>
+          <rect
+            width={spotWidth}
+            height={spotHeight}
+            x={2}
+            y={isBottom ? 0 : 40}
+            fill="#C0F"
+            rx={2}
+          />
+          <circle
+            cx={47}
+            cy={isBottom ? 56 : 28}
+            r={28}
+            fill="#777"
+            stroke="#fff"
+            strokeWidth={8}
+          />
+        </>
+      )}
       {/*<text x={45} y={isBottom ? 45 : 78} fontSize="12" textAnchor="middle">
         32
       </text>*/}
