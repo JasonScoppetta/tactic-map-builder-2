@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    --background: 216 18% 99%;
+    --alt-background: 210 20% 96%;
+    --foreground: 216 5% 10%;
+    --card: 216 18% 100%;
+    --card-foreground: 216 5% 15%;
+    --popover: 216 18% 98%;
+    --popover-foreground: 216 95% 10%;
+    --primary: 26 97% 57%;
+    --primary-foreground: 0 0% 100%;
+    --primary-background: 5 100% 100%;
+    --secondary: 216 18% 90%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 240 4% 56%;
+    --accent: 216 75% 90%;
+    --accent-foreground: 216 5% 15%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 216 5% 98%;
+    --border: 220 17% 83%;
+    --input: 220 17% 83%;
+    --ring: var(--primary);
+    --radius: 0.5rem;
+    --semantic-success: 110 32% 89%;
+    --semantic-success-foreground: 120 75% 34%;
+    --semantic-error: 0 50% 89%;
+    --semantic-error-foreground: 0 50% 50%;
+    --semantic-warning: 47 86% 34%;
+    --semantic-warning-foreground: 54 89% 89%;
+    --semantic-info: 180 44% 88%;
+    --semantic-info-foreground: 176 100% 25%;
+
+    /* target color */
+    --target-area: 32 98% 80%;
+    --target-area-foreground: 216 5% 10%;
+    --target-device: 199 90% 80%;
+    --target-device-foreground: 216 5% 10%;
+    --target-entity: 87 40% 76%;
+    --target-entity-foreground: 216 5% 10%;
+    --target-label: 0 0% 83%;
+    --target-label-foreground: 216 5% 10%;
+  }
+  .dark {
+    --background: 216 10% 5%;
+    --alt-background: 216 10% 5%;
+    --foreground: 216 0% 90%;
+    --card: 216 0% 2%;
+    --card-foreground: 216 0% 90%;
+    --popover: 216 10% 5%;
+    --popover-foreground: 216 0% 90%;
+    --primary: 256 47% 35%;
+    --primary-foreground: 0 0% 100%;
+    --primary-background: 216 10% 5%;
+    --secondary: 216 10% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 178 10% 15%;
+    --muted-foreground: 216 0% 60%;
+    --accent: 178 10% 15%;
+    --accent-foreground: 216 0% 90%;
+    --destructive: 0 50% 30%;
+    --destructive-foreground: 216 0% 90%;
+    --border: 216 20% 18%;
+    --input: 216 20% 18%;
+    --ring: var(--primary);
+    --radius: 0.5rem;
+    --semantic-success: 110 32% 89%;
+    --semantic-success-foreground: 120 75% 34%;
+    --semantic-error: 0 50% 89%;
+    --semantic-error-foreground: 0 50% 50%;
+    --semantic-warning: 47 86% 34%;
+    --semantic-warning-foreground: 54 89% 89%;
+    --semantic-info: 180 44% 88%;
+    --semantic-info-foreground: 176 100% 25%;
+  }
+}
+
+* {
+  font-family: 'sofia-pro-soft', system-ui, sans-serif !important;
+}

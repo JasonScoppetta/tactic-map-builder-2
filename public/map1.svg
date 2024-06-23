@@ -1,0 +1,37 @@
+<svg width="1300" height="1138" viewBox="0 0 1300 1138" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g id="Penrose health  -F1 - V1">
+        <g id="Structure">
+            <path id="Background - White" d="M1275 31H735.5V343.5H28V1109.5H1042.5V764H1275V659V31Z" fill="white"/>
+            <g id="Layered">
+                <g id="Furniture">
+                    <circle id="Ellipse 1" cx="787" cy="94" r="25" fill="#E8ECEF"/>
+                    <circle id="Ellipse 2" cx="901" cy="99" r="25" fill="#E8ECEF"/>
+                    <g id="couch">
+                        <rect id="Rectangle 312" x="755" y="214" width="12.6923" height="40.3846" rx="2.30769" fill="#E8ECEF"/>
+                        <rect id="Rectangle 317" x="891.154" y="214" width="12.6923" height="40.3846" rx="2.30769" fill="#E8ECEF"/>
+                        <rect id="Rectangle 313" x="768.846" y="214" width="60" height="40.3846" rx="2.30769" fill="#E8ECEF"/>
+                        <rect id="Rectangle 316" x="830" y="214" width="60" height="40.3846" rx="2.30769" fill="#E8ECEF"/>
+                        <rect id="Rectangle 314" x="755" y="255.538" width="73.8462" height="18.4615" rx="2.30769" fill="#E8ECEF"/>
+                        <rect id="Rectangle 315" x="830" y="255.538" width="73.8462" height="18.4615" rx="2.30769" fill="#E8ECEF"/>
+                    </g>
+                    <rect id="Rectangle 318" x="779" y="134" width="100" height="44" fill="#E8ECEF"/>
+                </g>
+                <rect id="Table" x="171" y="875" width="104" height="177" rx="6" fill="#E8ECEF"/>
+                <path id="Door" d="M199 750.5H323M1276 659V744.5" stroke="#E8ECEF" stroke-width="14" stroke-linecap="round"/>
+            </g>
+            <path id="Exterior Walls" d="M1275.5 659V31H736V343.5H28.5V1109.5H1043V764H1275.5V739" stroke="#D1D5D9" stroke-width="28" stroke-linecap="round"/>
+            <path id="Interior Walls" d="M33.5 750.5H203M281 750.5H340V1109.5" stroke="#D1D5D9" stroke-width="16" stroke-linecap="round"/>
+            <g id="Filler">
+                <g id="pillars">
+                    <circle id="Ellipse 3" cx="339" cy="429" r="15" fill="#D1D5D9"/>
+                    <circle id="Ellipse 4" cx="628" cy="420" r="15" fill="#D1D5D9"/>
+                    <circle id="Ellipse 5" cx="959" cy="414" r="15" fill="#D1D5D9"/>
+                    <circle id="Ellipse 6" cx="962" cy="759" r="15" fill="#D1D5D9"/>
+                    <circle id="Ellipse 7" cx="637" cy="759" r="15" fill="#D1D5D9"/>
+                    <circle id="Ellipse 8" cx="101" cy="869" r="15" fill="#D1D5D9"/>
+                    <circle id="Ellipse 9" cx="333" cy="760" r="15" fill="#D1D5D9"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
