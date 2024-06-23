@@ -2,7 +2,7 @@ import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/conte
 import { useMap } from "@/components/Map/providers/MapProvider/context";
 import React from "react";
 import { SpotGroup } from "../SpotGroup/SpotGroup";
-import { SpotGroupRow } from "../SpotGroupRow/SpotGroupRow";
+import { SpotGroupLine } from "@/components/SpotGroupLine/SpotGroupLine";
 import { MapGrid } from "./MapGrid";
 
 export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
@@ -26,12 +26,10 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
     updateViewBox(newScale);
   };
 
-  const updateViewBox = (newScale) => {
+  const updateViewBox = (newScale: number) => {
     // Calculate new viewBox dimensions based on scale
     const newWidth = map.width / newScale; // Assuming original width of 400
     const newHeight = map.height / newScale; // Assuming original height of 400
-    const newX = (map.width - newWidth) / 2; // Center horizontally
-    const newY = (map.height - newHeight) / 2; // Center vertically
     const newViewBox = `${0} ${0} ${newWidth} ${newHeight}`;
     setViewBox(newViewBox);
   };
@@ -62,7 +60,13 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
         {map.groups.map((group, groupIndex) => (
           <SpotGroup key={groupIndex} group={group}>
             {group.rows.map((row, rowIndex) => (
-              <SpotGroupRow key={rowIndex} row={row} rowIndex={rowIndex} />
+              <SpotGroupLine
+                group={group}
+                orientation={group.orientation}
+                key={rowIndex}
+                row={row}
+                rowIndex={rowIndex}
+              />
             ))}
           </SpotGroup>
         ))}

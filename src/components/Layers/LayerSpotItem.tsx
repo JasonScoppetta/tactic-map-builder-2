@@ -10,7 +10,6 @@ const layerPreviewWidth = 32;
 const layerPreviewHeight = 32;
 
 export const LayerSpotItem: React.FC<LayerSpotItemProps> = ({
-  children,
   spot,
   indentation = 0,
 }) => {
@@ -34,7 +33,7 @@ export const LayerSpotItem: React.FC<LayerSpotItemProps> = ({
       layerPreviewRect.height,
     ].join(" ");
 
-    layerPreviewGroupRef.current.parentNode?.setAttribute(
+    (layerPreviewGroupRef.current.parentNode as SVGSVGElement)?.setAttribute(
       "viewBox",
       newViewBox,
     );
@@ -45,7 +44,7 @@ export const LayerSpotItem: React.FC<LayerSpotItemProps> = ({
       className={
         "border-b border-input select-none flex gap-2 items-center py-1"
       }
-      style={{ paddingLeft: indentation * 16 }}
+      style={{ paddingLeft: 10 + indentation * 16 }}
     >
       <div
         className={
@@ -61,7 +60,10 @@ export const LayerSpotItem: React.FC<LayerSpotItemProps> = ({
           <g ref={layerPreviewGroupRef}></g>
         </svg>
       </div>
-      <div className={"w-full"}>{spot.id}</div>
+      <div className={"w-full flex gap-2 items-center"}>
+        <div className={"text-muted-foreground text-xs"}>{spot.type}</div>
+        <div>{spot.label}</div>
+      </div>
     </div>
   );
 };

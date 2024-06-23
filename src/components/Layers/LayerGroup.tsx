@@ -1,3 +1,4 @@
+import { Button } from "@/components/primitives/Button";
 import { cn } from "@/helpers/cn";
 import React from "react";
 
@@ -15,11 +16,24 @@ export const LayerGroup: React.FC<LayerGroupProps> = ({
     <div className={cn("overflow-hidden")}>
       <div
         className={
-          "whitespace-nowrap text-ellipsis border-b border-input bg-primary-background py-1"
+          "flex justify-between border-b border-input bg-primary-background items-stretch"
         }
-        style={{ paddingLeft: indentation * 16 }}
+        style={{ paddingLeft: 10 + indentation * 16 }}
       >
-        {title}
+        <div
+          className={
+            "whitespace-nowrap text-ellipsis flex-grow overflow-hidden select-none py-1"
+          }
+        >
+          {title}
+        </div>
+        <div className={"flex h-full"}>
+          <Button
+            variant={"ghost"}
+            icon={"Plus"}
+            className={"h-full rounded-none px-2"}
+          />
+        </div>
       </div>
       {children}
     </div>

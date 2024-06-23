@@ -1,4 +1,4 @@
-import { SpotItem } from "@/types";
+import { Orientation, SpotItem } from "@/types";
 import * as React from "react";
 
 const spotWidth = 94;
@@ -7,10 +7,13 @@ const spotHeight = 50;
 export interface SpotProps {
   x?: number;
   y?: number;
-  orientation?: "top" | "bottom";
+  orientation?: Orientation;
   paddingY?: number;
   paddingX?: number;
   spot: SpotItem;
+  color?: string;
+  textColor?: string;
+  label?: string;
 }
 export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
   const {
@@ -20,32 +23,71 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
     paddingY = 1,
     paddingX = 1,
     spot,
+    color = "#C0F",
+    label,
+    textColor,
   } = props;
 
   const isBottom = orientation === "bottom";
+  const isRight = orientation === "right";
+  const isHorizontal = orientation === "top" || orientation === "bottom";
+
+  const isEmpty = spot.type === "Empty";
+
+  let circleCy = 28;
+  let circleCx = 47;
+  let rectX = 2;
+  let rectY = 40;
+  let labelX = 45;
+  let labelY = 78;
+  let fullHeight = 90;
+
+  let rectWidth = spotWidth;
+  let rectHeight = spotHeight;
+
+  if (isHorizontal && isBottom) {
+    circleCy = 56;
+    labelY = 16;
+    rectY = 0;
+  } else if (!isHorizontal) {
+    rectWidth = spotHeight!;
+    rectHeight = spotWidth!;
+
+    fullHeight = 94;
+    rectY = -4;
+    circleCy = 47;
+    labelY = 52;
+    if (isRight) {
+      labelX = 14;
+      rectX = 2;
+      circleCx = 58;
+    } else {
+      labelX = 81;
+      rectX = 46;
+      circleCx = 36;
+    }
+  }
 
   return (
     <g
       className={"spot-item"}
       data-spot-id={spot.id}
-      width={spotWidth}
-      height={90}
       ref={ref}
-      transform={`translate(${x * spotWidth + (x > 0 ? paddingX * x : 0)}, ${y * 90 + (y > 0 ? paddingY * y : 0)})`}
+      transform={`translate(${x * spotWidth + (x > 0 ? paddingX * x : 0)}, ${y * fullHeight + (y > 0 ? paddingY * y : 0)})`}
     >
       {spot.type === "Desk" && (
         <>
           <rect
-            width={spotWidth}
-            height={spotHeight}
-            x={2}
-            y={isBottom ? 0 : 40}
-            fill="#C0F"
+            width={rectWidth}
+            height={rectHeight}
+            x={rectX}
+            y={rectY}
+            fill={color}
             rx={2}
           />
           <circle
-            cx={47}
-            cy={isBottom ? 56 : 28}
+            cx={circleCx}
+            cy={circleCy}
             r={28}
             fill="#777"
             stroke="#fff"
@@ -53,9 +95,17 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
           />
         </>
       )}
-      {/*<text x={45} y={isBottom ? 45 : 78} fontSize="12" textAnchor="middle">
-        32
-      </text>*/}
+      {!isEmpty && label && (
+        <text
+          fill={textColor}
+          x={labelX}
+          y={labelY}
+          fontSize="12"
+          textAnchor="middle"
+        >
+          {label}
+        </text>
+      )}
     </g>
   );
 });

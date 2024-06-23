@@ -9,23 +9,27 @@ export const Layers: React.FC = () => {
 
   return (
     <div className={"flex flex-col"}>
-      {editor.value?.groups.map((group) => (
-        <LayerGroup key={group.id} title={group.label}>
-          {group.rows.map((row, rowIndex) => (
-            <LayerGroup
-              title={"Row " + (rowIndex + 1)}
-              key={row.id}
-              indentation={1}
-            >
-              {row.items.map((item) => (
-                <LayerSpotItem indentation={2} key={item.id} spot={item}>
-                  {item.id}
-                </LayerSpotItem>
-              ))}
-            </LayerGroup>
-          ))}
-        </LayerGroup>
-      ))}
+      <LayerGroup title={"Text"}></LayerGroup>
+      <LayerGroup title={"Icons"}></LayerGroup>
+      <LayerGroup title={"Groups"}>
+        {editor.value?.groups.map((group) => (
+          <LayerGroup key={group.id} title={group.label} indentation={1}>
+            {group.rows.map((row, rowIndex) => (
+              <LayerGroup
+                title={"Row " + (rowIndex + 1)}
+                key={row.id}
+                indentation={2}
+              >
+                {row.items.map((item) => (
+                  <LayerSpotItem indentation={2} key={item.id} spot={item}>
+                    {item.id}
+                  </LayerSpotItem>
+                ))}
+              </LayerGroup>
+            ))}
+          </LayerGroup>
+        ))}
+      </LayerGroup>
     </div>
   );
 };

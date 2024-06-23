@@ -1,4 +1,5 @@
-export type Orientation = "top" | "bottom";
+export type Orientation = "top" | "bottom" | "left" | "right";
+export type GroupOrientation = "horizontal" | "vertical";
 
 export interface DraggingGuides {
   x: number[];
@@ -38,6 +39,7 @@ export interface MapEditorMethods {
   selectGroup: (id: string, appendSelection?: boolean) => void;
   clearSelection: () => void;
   addSpot: (options: AddSpotOptions) => SpotItem;
+  updateGroup: (groupId: string, group: Partial<SpotGroup>) => void;
 }
 
 export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
@@ -46,13 +48,17 @@ export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
   selectedGroups: Record<string, boolean>;
 }
 
-export type SpotType = "Desk" | "Blank";
+export type SpotType = "Desk" | "Empty";
 
 export interface SpotItem {
   id: string;
   paddingX?: number;
   paddingY?: number;
   type: SpotType;
+  label?: string;
+  orientation?: Orientation;
+  color?: string;
+  textColor?: string;
 }
 
 export interface SpotRow {
@@ -61,6 +67,8 @@ export interface SpotRow {
   items: SpotItem[];
   paddingX?: number;
   paddingY?: number;
+  color?: string;
+  textColor?: string;
 }
 
 export interface SpotGroup {
@@ -71,6 +79,10 @@ export interface SpotGroup {
   paddingY?: number;
   x: number;
   y: number;
+  orientation: GroupOrientation;
+  rotation?: number;
+  color?: string;
+  textColor?: string;
 }
 
 type RequiredMapProps = "groups" | "width" | "height";

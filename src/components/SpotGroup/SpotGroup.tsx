@@ -31,13 +31,28 @@ export const SpotGroup = React.forwardRef<SVGSVGElement, SpotGroupProps>(
       selectBoxRef.setAttribute("height", String(groupSize?.height || 0));
     }, [isSelected, selectBoxRef, groupRef.current]);
 
+    const rotation = React.useMemo(() => {
+      if (!group.rotation || !groupRef.current) return "";
+
+      const offsetX = 0;
+      const offsetY = 0;
+
+      let bbox = groupRef.current.getBBox();
+      let cx = bbox.x + bbox.width / 2 + offsetX;
+      let cy = bbox.y + bbox.height / 2 + offsetY;
+
+      return `${group.rotation} ${cx} ${cy}`;
+    }, [group.rotation, groupRef.current]);
+
     return (
       <g
         className={cn(`map-group`, "spot-group touch-none")}
         data-group-id={group.id}
         ref={mergeRefs([groupRef, ref])}
-        transform={`translate(${group.x}, ${group.y})`}
+        transform={`translate(${group.x}, ${group.y})${rotation ? ` rotate(${rotation})` : ""}`}
         {...editorActions?.bindListeners()}
+        //onClick={rotate}
+        //style={{ transformOrigin: "center center" }}
       >
         {isSelected && (
           <rect
