@@ -8,20 +8,20 @@ export const MapEditorTools = () => {
   const selectionRect = useEditorSelectionBoundingRect();
   const editor = useMapEditor();
 
-  const selectedGroups = getObjectKeys(editor?.selectedGroups || {});
-  const isSingleSelect = selectedGroups.length === 1;
+  const selection = getObjectKeys(editor?.selection || {}).filter(
+    (key) => editor?.selection[key] === "group",
+  );
+  const isSingleSelect = selection.length === 1;
 
   const group = React.useMemo(() => {
     if (!isSingleSelect) return undefined;
-    return editor?.value?.groups.find(
-      (group) => group.id === selectedGroups[0],
-    );
-  }, [selectedGroups, isSingleSelect]);
+    return editor?.value?.groups.find((group) => group.id === selection[0]);
+  }, [selection, isSingleSelect]);
   const rows = group?.rows || [];
 
   function addSpotToRow(rowId: string) {
     editor?.addSpot({
-      groupId: selectedGroups[0],
+      groupId: selection[0],
       type: "Desk",
       rowId,
     });
@@ -43,7 +43,7 @@ export const MapEditorTools = () => {
             "bg-primary w-8 h-8 rounded-[100%] flex items-center justify-center shadow-lg border border-input"
           }
           onClick={() => {
-            editor?.updateGroup(selectedGroups[0], {
+            editor?.updateGroup(selection[0], {
               rotation: (group?.rotation || 0) + 10,
             });
           }}

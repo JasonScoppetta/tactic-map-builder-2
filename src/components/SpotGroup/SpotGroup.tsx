@@ -1,5 +1,6 @@
-import { useIsSpotGroupSelected } from "@/components/SpotGroup/useIsSpotGroupSelected";
+import { useIsSpotGroupSelected } from "@/hooks/useIsSpotGroupSelected";
 import { useSpotGroupEditorActions } from "@/components/SpotGroup/useSpotGroupEditorActions";
+import { SvgSelectionRectangle } from "@/components/SvgSelectionRectangle";
 import { cn } from "@/helpers/cn";
 import { mergeRefs } from "@/helpers/mergeRef";
 import React from "react";
@@ -14,22 +15,7 @@ export const SpotGroup = React.forwardRef<SVGSVGElement, SpotGroupProps>(
     const { group, children } = props;
     const editorActions = useSpotGroupEditorActions(group);
     const groupRef = React.useRef<SVGGElement | null>(null);
-    const [selectBoxRef, setSelectBoxRef] =
-      React.useState<SVGRectElement | null>(null);
     const isSelected = useIsSpotGroupSelected(group.id);
-
-    React.useEffect(() => {
-      if (!isSelected) {
-        setSelectBoxRef(null);
-        return;
-      }
-
-      if (!selectBoxRef) return;
-      const groupSize = groupRef.current?.getBBox();
-
-      selectBoxRef.setAttribute("width", String(groupSize?.width || 0));
-      selectBoxRef.setAttribute("height", String(groupSize?.height || 0));
-    }, [isSelected, selectBoxRef, groupRef.current]);
 
     const rotation = React.useMemo(() => {
       if (!group.rotation || !groupRef.current) return "";
@@ -37,9 +23,9 @@ export const SpotGroup = React.forwardRef<SVGSVGElement, SpotGroupProps>(
       const offsetX = 0;
       const offsetY = 0;
 
-      let bbox = groupRef.current.getBBox();
-      let cx = bbox.x + bbox.width / 2 + offsetX;
-      let cy = bbox.y + bbox.height / 2 + offsetY;
+      const bbox = groupRef.current.getBBox();
+      const cx = bbox.x + bbox.width / 2 + offsetX;
+      const cy = bbox.y + bbox.height / 2 + offsetY;
 
       return `${group.rotation} ${cx} ${cy}`;
     }, [group.rotation, groupRef.current]);
@@ -54,16 +40,10 @@ export const SpotGroup = React.forwardRef<SVGSVGElement, SpotGroupProps>(
         //onClick={rotate}
         //style={{ transformOrigin: "center center" }}
       >
-        {isSelected && (
-          <rect
-            ref={setSelectBoxRef}
-            width={10}
-            height={10}
-            x={0}
-            y={0}
-            className={"fill-primary/50 stroke-primary stroke-2"}
-          />
-        )}
+        <SvgSelectionRectangle
+          isSelected={isSelected}
+          targetRef={groupRef.current}
+        />
         {children}
       </g>
     );

@@ -24,8 +24,6 @@ export const LayerSpotItem: React.FC<LayerSpotItemProps> = ({
 
     const layerPreviewRect = layerPreviewGroupRef.current.getBBox();
 
-    console.log(layerPreviewRect);
-
     const newViewBox = [
       0,
       0,

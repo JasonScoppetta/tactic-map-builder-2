@@ -5,6 +5,8 @@ import {
   AddSpotOptions,
   DraggingGuides,
   GroupPosition,
+  SelectionTargets,
+  SelectionTargetType,
   SpotGroup,
   SpotItem,
 } from "@/types";
@@ -14,9 +16,7 @@ import { MapEditorContext, MapEditorProviderProps } from "./context";
 export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
   const { children, ...rest } = props;
 
-  const [selectedGroups, setSelectedGroups] = React.useState<
-    Record<string, boolean>
-  >({});
+  const [selection, setSelection] = React.useState<SelectionTargets>({});
 
   const [mapState, setMapState] = React.useState(props.value);
   const [draggingGroup, setDraggingGroup] = React.useState<null | string>(null);
@@ -105,16 +105,20 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     });
   };
 
-  const selectGroup = (id: string, appendSelection?: boolean) => {
+  const updateSelection = (
+    id: string,
+    targetType: SelectionTargetType,
+    appendSelection?: boolean,
+  ) => {
     if (appendSelection) {
-      setSelectedGroups((prev) => ({ ...prev, [id]: true }));
+      setSelection((prev) => ({ ...prev, [id]: targetType }));
       return;
     }
-    setSelectedGroups({ [id]: true });
+    setSelection({ [id]: targetType });
   };
 
   const clearSelection = () => {
-    setSelectedGroups({});
+    setSelection({});
   };
 
   const addSpot = (options: AddSpotOptions) => {
@@ -180,13 +184,13 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         moveGroup,
         startDraggingGroup,
         endDraggingGroup,
-        selectGroup,
+        updateSelection,
         clearSelection,
         addSpot,
         updateGroup,
         draggingGroup,
         guides: draggingGuides,
-        selectedGroups,
+        selection,
       }}
     >
       <MapEditorTools />

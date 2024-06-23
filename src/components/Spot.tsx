@@ -1,3 +1,6 @@
+import { SvgSelectionRectangle } from "@/components/SvgSelectionRectangle";
+import { mergeRefs } from "@/helpers/mergeRef";
+import { useIsSpotSelected } from "@/hooks/useIsSpotSelected";
 import { Orientation, SpotItem } from "@/types";
 import * as React from "react";
 
@@ -28,11 +31,14 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
     textColor,
   } = props;
 
+  const groupRef = React.useRef<SVGGElement | null>(null);
+
   const isBottom = orientation === "bottom";
   const isRight = orientation === "right";
   const isHorizontal = orientation === "top" || orientation === "bottom";
 
   const isEmpty = spot.type === "Empty";
+  const isSelected = useIsSpotSelected(spot.id);
 
   let circleCy = 28;
   let circleCx = 47;
@@ -72,9 +78,13 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
     <g
       className={"spot-item"}
       data-spot-id={spot.id}
-      ref={ref}
+      ref={mergeRefs([groupRef, ref])}
       transform={`translate(${x * spotWidth + (x > 0 ? paddingX * x : 0)}, ${y * fullHeight + (y > 0 ? paddingY * y : 0)})`}
     >
+      <SvgSelectionRectangle
+        isSelected={isSelected}
+        targetRef={groupRef.current}
+      />
       {spot.type === "Desk" && (
         <>
           <rect
@@ -97,6 +107,7 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
       )}
       {!isEmpty && label && (
         <text
+          className={"touch-none select-none"}
           fill={textColor}
           x={labelX}
           y={labelY}

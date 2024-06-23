@@ -27,7 +27,7 @@ export const useSpotGroupEditorActions = (group: SpotGroup) => {
       } = options;
 
       if (tap) {
-        editor?.selectGroup(group.id, metaKey);
+        editor?.updateSelection(group.id, "group", metaKey);
         return;
       }
 

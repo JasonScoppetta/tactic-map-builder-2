@@ -4,7 +4,7 @@ import React from "react";
 
 export const useEditorSelectionBoundingRect = () => {
   const editor = useMapEditor();
-  const groupSelectionKeys = getObjectKeys(editor?.selectedGroups || {});
+  const groupSelectionKeys = getObjectKeys(editor?.selection || {});
   return React.useMemo(() => {
     const rect: Pick<DOMRect, "x" | "y" | "width" | "height"> = {
       x: 0,

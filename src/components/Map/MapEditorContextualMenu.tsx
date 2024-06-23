@@ -1,3 +1,4 @@
+import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -9,6 +10,7 @@ import React, { PropsWithChildren } from "react";
 export const MapEditorContextualMenu: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  const editor = useMapEditor();
   return (
     <ContextMenu modal>
       <ContextMenuTrigger
@@ -28,7 +30,11 @@ export const MapEditorContextualMenu: React.FC<PropsWithChildren> = ({
           }
 
           if (spotItem) {
-            console.log(spotItem);
+            const spotId = spotItem.getAttribute("data-spot-id");
+            if (spotId) {
+              editor?.updateSelection(spotId, "spot");
+              console.log(spotId);
+            }
           }
         }}
       >

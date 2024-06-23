@@ -1,5 +1,7 @@
 export type Orientation = "top" | "bottom" | "left" | "right";
 export type GroupOrientation = "horizontal" | "vertical";
+export type SelectionTargetType = "group" | "spot";
+export type SelectionTargets = Record<string, SelectionTargetType>;
 
 export interface DraggingGuides {
   x: number[];
@@ -36,7 +38,11 @@ export interface MapEditorMethods {
   moveGroup: (id: string, position: GroupPosition) => void;
   startDraggingGroup: (id: string) => void;
   endDraggingGroup: () => void;
-  selectGroup: (id: string, appendSelection?: boolean) => void;
+  updateSelection: (
+    id: string,
+    targetType: SelectionTargetType,
+    appendSelection?: boolean,
+  ) => void;
   clearSelection: () => void;
   addSpot: (options: AddSpotOptions) => SpotItem;
   updateGroup: (groupId: string, group: Partial<SpotGroup>) => void;
@@ -45,7 +51,7 @@ export interface MapEditorMethods {
 export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
   guides: DraggingGuides;
   draggingGroup: string | null;
-  selectedGroups: Record<string, boolean>;
+  selection: SelectionTargets;
 }
 
 export type SpotType = "Desk" | "Empty";
