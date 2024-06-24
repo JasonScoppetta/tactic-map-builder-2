@@ -1,4 +1,5 @@
 import { Layers } from "@/components/Layers/Layers";
+import { MapEditorContextualMenu } from "@/components/Map/contextual-menu/MapEditorContextualMenu";
 import { MapEditorProvider } from "@/components/Map/providers/MapEditorProvider/MapEditorProvider";
 import { cn } from "@/helpers/cn";
 import { Map } from "./components/Map/Map";
@@ -398,12 +399,30 @@ function App() {
       showGrid
       isEditing
     >
-      <div className={cn("flex h-screen w-screen")}>
-        <div className={"w-[360px] bg-muted overflow-auto"}>
+      <div
+        className={cn(
+          "grid h-screen grid-rows-[60px,1fr] grid-cols-[360px,1fr]",
+        )}
+      >
+        <div
+          className={"flex w-full border-b border-input shadow-md relative"}
+          style={{ gridRow: "1 / 2", gridColumn: "1 / -1" }}
+        >
+          SIDEBAR
+        </div>
+        <div
+          className={"bg-muted overflow-auto"}
+          style={{ gridRow: "2 / -1", gridColumn: "1 / 2" }}
+        >
           <Layers />
         </div>
-        <div className={cn("overflow-auto flex-grow")}>
-          <Map />
+        <div
+          className={cn("overflow-auto")}
+          style={{ gridRow: "2 / -1", gridColumn: "2 / -1" }}
+        >
+          <MapEditorContextualMenu>
+            <Map />
+          </MapEditorContextualMenu>
         </div>
       </div>
     </MapEditorProvider>

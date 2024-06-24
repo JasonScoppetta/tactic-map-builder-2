@@ -1,4 +1,3 @@
-import { MapEditorContextualMenu } from "@/components/Map/contextual-menu/MapEditorContextualMenu";
 import { MapEditorTools } from "@/components/Map/MapEditorTools";
 import { EventManager } from "@/helpers/event-manager";
 import { getUuid } from "@/helpers/getUuid";
@@ -320,7 +319,7 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
       }}
     >
       <MapEditorTools />
-      <MapEditorContextualMenu>{children}</MapEditorContextualMenu>
+      {children}
     </MapEditorContext.Provider>
   );
 };
