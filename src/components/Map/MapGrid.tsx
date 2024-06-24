@@ -3,8 +3,11 @@ import { useMap } from "@/components/Map/providers/MapProvider/context";
 import React from "react";
 
 export const MapGrid: React.FC = () => {
-  const { gridSize, width, height } = useMap();
+  const { gridSize } = useMap();
   const editor = useMapEditor();
+
+  const width = editor?.areaWidth || 0;
+  const height = editor?.areaHeight || 0;
 
   const gridLines = React.useMemo(() => {
     const lines: React.ReactElement[] = [];

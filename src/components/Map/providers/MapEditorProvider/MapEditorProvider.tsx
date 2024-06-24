@@ -1,4 +1,4 @@
-import { MapEditorTools } from "@/components/Map/MapEditorTools";
+import { MapEditorSelectionTools } from "@/components/Map/MapEditorSelectionTools";
 import { EventManager } from "@/helpers/event-manager";
 import { getUuid } from "@/helpers/getUuid";
 import {
@@ -318,7 +318,7 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         events,
       }}
     >
-      <MapEditorTools />
+      <MapEditorSelectionTools />
       {children}
     </MapEditorContext.Provider>
   );

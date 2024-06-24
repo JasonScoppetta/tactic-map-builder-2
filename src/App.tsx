@@ -1,7 +1,9 @@
 import { Layers } from "@/components/Layers/Layers";
 import { MapEditorContextualMenu } from "@/components/Map/contextual-menu/MapEditorContextualMenu";
+import { MapEditorTools } from "@/components/Map/MapEditorTools";
 import { MapEditorProvider } from "@/components/Map/providers/MapEditorProvider/MapEditorProvider";
 import { cn } from "@/helpers/cn";
+import React from "react";
 import { Map } from "./components/Map/Map";
 import { MapText, SpotGroup as ISpotGroup } from "./types";
 import "./App.css";
@@ -387,6 +389,25 @@ const texts: MapText[] = [
 ];
 
 function App() {
+  const [containerRef, setContainerRef] =
+    React.useState<HTMLDivElement | null>();
+
+  const [areaSize, setAreaSize] = React.useState({ width: 0, height: 0 });
+
+  React.useEffect(() => {
+    const updateSize = () => {
+      if (!containerRef) return;
+      setAreaSize({
+        width: containerRef.clientWidth,
+        height: containerRef.clientHeight,
+      });
+    };
+
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, [containerRef]);
+
   return (
     <MapEditorProvider
       value={{
@@ -396,6 +417,8 @@ function App() {
         height: 1138,
         gridSize: 10,
       }}
+      areaHeight={areaSize.height}
+      areaWidth={areaSize.width}
       showGrid
       isEditing
     >
@@ -408,7 +431,7 @@ function App() {
           className={"flex w-full border-b border-input shadow-md relative"}
           style={{ gridRow: "1 / 2", gridColumn: "1 / -1" }}
         >
-          SIDEBAR
+          <MapEditorTools />
         </div>
         <div
           className={"bg-muted overflow-auto"}
@@ -417,8 +440,9 @@ function App() {
           <Layers />
         </div>
         <div
-          className={cn("overflow-auto")}
+          className={cn("overflow-hidden")}
           style={{ gridRow: "2 / -1", gridColumn: "2 / -1" }}
+          ref={setContainerRef}
         >
           <MapEditorContextualMenu>
             <Map />

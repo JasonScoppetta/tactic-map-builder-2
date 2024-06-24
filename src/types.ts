@@ -40,6 +40,8 @@ export interface MapEditorOptions {
   isEditing?: boolean;
   showGrid?: boolean;
   value?: MapValue;
+  areaWidth: number;
+  areaHeight: number;
 }
 
 export interface AddSpotOptions {
