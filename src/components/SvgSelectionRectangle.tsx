@@ -35,7 +35,7 @@ export const SvgSelectionRectangle: React.FC<SvgSelectionRectangleProps> = ({
       height={10}
       x={0}
       y={0}
-      className={"fill-primary/50 stroke-primary stroke-2"}
+      className={"selection-rectangle fill-primary/50 stroke-primary stroke-2"}
     />
   );
 };

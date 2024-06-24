@@ -1,5 +1,6 @@
-import { MapEditorContextualMenu } from "@/components/Map/MapEditorContextualMenu";
+import { MapEditorContextualMenu } from "@/components/Map/contextual-menu/MapEditorContextualMenu";
 import { MapEditorTools } from "@/components/Map/MapEditorTools";
+import { EventManager } from "@/helpers/event-manager";
 import { getUuid } from "@/helpers/getUuid";
 import {
   AddSpotOptions,
@@ -9,12 +10,17 @@ import {
   SelectionTargetType,
   SpotGroup,
   SpotItem,
+  SpotType,
 } from "@/types";
 import React from "react";
 import { MapEditorContext, MapEditorProviderProps } from "./context";
 
 export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
   const { children, ...rest } = props;
+
+  const events = React.useMemo(() => {
+    return new EventManager();
+  }, []);
 
   const [selection, setSelection] = React.useState<SelectionTargets>({});
 
@@ -172,9 +178,73 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     });
   };
 
+  const updateSpot = (spotId: string, spot: Partial<SpotItem>) => {
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      let updatedSpot: SpotItem | undefined;
+      const newState = {
+        ...prev,
+        groups: prev.groups.map((group) => {
+          return {
+            ...group,
+            rows: group.rows.map((row) => {
+              return {
+                ...row,
+                items: row.items.map((item) => {
+                  if (item.id === spotId) {
+                    const _spot = {
+                      ...item,
+                      ...spot,
+                    };
+
+                    updatedSpot = _spot;
+
+                    return _spot;
+                  }
+                  return item;
+                }),
+              };
+            }),
+          };
+        }),
+      };
+
+      events.dispatchEvent(
+        {
+          event: "update",
+          targetType: "spot",
+          id: spotId,
+          spot: updatedSpot,
+        },
+        false,
+      );
+
+      return newState;
+    });
+  };
+
+  const getSpot = (spotId: string) => {
+    let spot: SpotItem | undefined;
+    if (!mapState) return spot;
+
+    for (const group of mapState.groups) {
+      for (const row of group.rows) {
+        spot = row.items.find((item) => item.id === spotId);
+        if (spot) break;
+      }
+      if (spot) break;
+    }
+
+    return spot;
+  };
+
   React.useEffect(() => {
     updateGroupsPositions();
   }, []);
+
+  React.useEffect(() => {
+    events.processQueue();
+  }, [events.queue.length]);
 
   return (
     <MapEditorContext.Provider
@@ -188,9 +258,12 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         clearSelection,
         addSpot,
         updateGroup,
+        updateSpot,
+        getSpot,
         draggingGroup,
         guides: draggingGuides,
         selection,
+        events,
       }}
     >
       <MapEditorTools />

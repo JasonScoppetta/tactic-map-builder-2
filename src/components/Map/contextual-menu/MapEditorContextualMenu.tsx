@@ -1,22 +1,28 @@
+import { SpotContextMenuItems } from "@/components/Map/contextual-menu/menus/SpotContextMenuItems";
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import {
   ContextMenu,
   ContextMenuContent,
-  ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/primitives/context-menu";
+import { SelectionTargetType } from "@/types";
 import React, { PropsWithChildren } from "react";
 
 export const MapEditorContextualMenu: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const editor = useMapEditor();
+
+  const [target, setTarget] = React.useState<{
+    target: SelectionTargetType;
+    id: string;
+  }>();
+
   return (
-    <ContextMenu modal>
+    <ContextMenu>
       <ContextMenuTrigger
         onContextMenu={(event) => {
           event.stopPropagation();
-          event.preventDefault();
 
           let spotItem: HTMLElement | null = null;
 
@@ -33,15 +39,21 @@ export const MapEditorContextualMenu: React.FC<PropsWithChildren> = ({
             const spotId = spotItem.getAttribute("data-spot-id");
             if (spotId) {
               editor?.updateSelection(spotId, "spot");
-              console.log(spotId);
+              setTarget({
+                target: "spot",
+                id: spotId,
+              });
+              return;
             }
           }
+
+          event.preventDefault();
         }}
       >
         <>{children}</>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem>Edit panel</ContextMenuItem>
+        {target?.target === "spot" && <SpotContextMenuItems id={target.id} />}
       </ContextMenuContent>
     </ContextMenu>
   );

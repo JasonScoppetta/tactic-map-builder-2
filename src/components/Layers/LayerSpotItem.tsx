@@ -1,3 +1,5 @@
+import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
+import { MapEditorEventData } from "@/helpers/event-manager";
 import { SpotItem } from "@/types";
 import React from "react";
 
@@ -15,12 +17,16 @@ export const LayerSpotItem: React.FC<LayerSpotItemProps> = ({
 }) => {
   const layerPreviewGroupRef = React.useRef<SVGSVGElement>(null);
   const spotElement = document.querySelector(`[data-spot-id="${spot.id}"]`);
-  React.useEffect(() => {
+  const editor = useMapEditor();
+
+  const updateLayerPreview = () => {
     if (!spotElement || !layerPreviewGroupRef.current) {
       return;
     }
 
-    layerPreviewGroupRef.current.innerHTML = spotElement.innerHTML;
+    const spotElementClone = spotElement.cloneNode(true) as HTMLElement;
+    spotElementClone.querySelector(".selection-rectangle")?.remove();
+    layerPreviewGroupRef.current.innerHTML = spotElementClone.innerHTML;
 
     const layerPreviewRect = layerPreviewGroupRef.current.getBBox();
 
@@ -35,7 +41,23 @@ export const LayerSpotItem: React.FC<LayerSpotItemProps> = ({
       "viewBox",
       newViewBox,
     );
-  }, [spotElement, layerPreviewGroupRef.current]);
+  };
+
+  React.useEffect(() => {
+    updateLayerPreview();
+
+    const onSpotUpdated = (event: MapEditorEventData) => {
+      if (event.targetType === "spot" && event.id === spot.id) {
+        updateLayerPreview();
+      }
+    };
+
+    editor?.events?.addListener(spot.id, "update", onSpotUpdated);
+
+    return () => {
+      editor?.events?.removeListener(spot.id, "update", onSpotUpdated);
+    };
+  }, [spot.id, spotElement, layerPreviewGroupRef.current]);
 
   return (
     <div

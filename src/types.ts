@@ -1,3 +1,5 @@
+import { EventManager } from "@/helpers/event-manager";
+
 export type Orientation = "top" | "bottom" | "left" | "right";
 export type GroupOrientation = "horizontal" | "vertical";
 export type SelectionTargetType = "group" | "spot";
@@ -46,12 +48,15 @@ export interface MapEditorMethods {
   clearSelection: () => void;
   addSpot: (options: AddSpotOptions) => SpotItem;
   updateGroup: (groupId: string, group: Partial<SpotGroup>) => void;
+  updateSpot: (spotId: string, spot: Partial<SpotItem>) => void;
+  getSpot: (spotId: string) => SpotItem | undefined;
 }
 
 export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
   guides: DraggingGuides;
   draggingGroup: string | null;
   selection: SelectionTargets;
+  events: EventManager;
 }
 
 export type SpotType = "Desk" | "Empty";
