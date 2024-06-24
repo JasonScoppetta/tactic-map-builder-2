@@ -17,7 +17,6 @@ const spotGroups: ISpotGroup[] = [
     color: "#80C7DF",
     rows: [
       {
-        color: "#E580FF",
         id: "df4b5850-aae8-43ac-936b-bf7bc30805c8",
         orientation: "top",
         items: [
@@ -358,7 +357,7 @@ const texts: MapText[] = [
     x: 100,
     y: 100,
     text: "Text 1",
-    color: "#80C7DF",
+    textColor: "#80C7DF",
     fontSize: 22,
   },
   {
@@ -366,7 +365,7 @@ const texts: MapText[] = [
     x: 300,
     y: 300,
     text: "Text 2",
-    color: "#80C7DF",
+    textColor: "#80C7DF",
     fontSize: 22,
   },
   {
@@ -374,7 +373,7 @@ const texts: MapText[] = [
     x: 500,
     y: 500,
     text: "Text 3",
-    color: "#80C7DF",
+    textColor: "#80C7DF",
     fontSize: 22,
   },
   {
@@ -382,7 +381,7 @@ const texts: MapText[] = [
     x: 800,
     y: 100,
     text: "Text 4",
-    color: "#80C7DF",
+    textColor: "#80C7DF",
     fontSize: 22,
     fontWeight: "bold",
   },

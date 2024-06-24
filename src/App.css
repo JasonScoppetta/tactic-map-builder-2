@@ -83,3 +83,20 @@
 * {
   font-family: 'sofia-pro-soft', system-ui, sans-serif !important;
 }
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+            "rlig" 1,
+            "calt" 1;
+  }
+}
+
+body,
+html {
+  height: 100% !important;
+}

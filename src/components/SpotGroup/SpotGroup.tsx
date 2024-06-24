@@ -32,7 +32,7 @@ export const SpotGroup = React.forwardRef<SVGSVGElement, SpotGroupProps>(
       <g
         className={cn(`map-group`, "spot-group touch-none")}
         data-group-id={group.id}
-        ref={mergeRefs([groupRef, ref])}
+        ref={mergeRefs([ref])}
         transform={`translate(${group.x}, ${group.y})${rotation ? ` rotate(${rotation})` : ""}`}
         {...editorActions?.bindListeners()}
         //onClick={rotate}
@@ -43,7 +43,7 @@ export const SpotGroup = React.forwardRef<SVGSVGElement, SpotGroupProps>(
           targetRef={groupRef.current}
           updateEventId={group.id}
         />
-        {children}
+        <g ref={groupRef}>{children}</g>
       </g>
     );
   },

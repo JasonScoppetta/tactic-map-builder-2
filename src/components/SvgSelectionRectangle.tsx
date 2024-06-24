@@ -50,8 +50,8 @@ export const SvgSelectionRectangle: React.FC<SvgSelectionRectangleProps> = ({
   return (
     <rect
       ref={setSelectBoxRef}
-      width={1}
-      height={1}
+      width={0}
+      height={0}
       x={0}
       y={0}
       className={"selection-rectangle fill-primary/50 stroke-primary stroke-2"}

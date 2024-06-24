@@ -14,7 +14,6 @@ export const MapIcon: React.FC<MapIconProps> = ({ icon }) => {
 
   return (
     <g
-      ref={groupRef}
       className={"map-icon touch-none"}
       data-icon-id={icon.id}
       transform={`translate(${icon.x}, ${icon.y})`}
@@ -24,7 +23,7 @@ export const MapIcon: React.FC<MapIconProps> = ({ icon }) => {
         isSelected={editorActions?.isSelected || false}
         targetRef={groupRef.current}
       />
-      <g>
+      <g ref={groupRef}>
         <IconFromSet
           icon={{ icon: icon.icon, set: icon.iconSet }}
           color={icon.color}

@@ -13,7 +13,6 @@ export const MapText: React.FC<MapTextProps> = ({ text }) => {
 
   return (
     <g
-      ref={groupRef}
       className={"map-text touch-none"}
       data-text-id={text.id}
       transform={`translate(${text.x}, ${text.y})`}
@@ -23,7 +22,7 @@ export const MapText: React.FC<MapTextProps> = ({ text }) => {
         isSelected={editorActions?.isSelected || false}
         targetRef={groupRef.current}
       />
-      <g>
+      <g ref={groupRef}>
         <text
           x={0}
           y={0}

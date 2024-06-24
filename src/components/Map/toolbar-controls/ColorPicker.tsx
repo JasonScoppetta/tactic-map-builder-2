@@ -1,3 +1,4 @@
+import { Button } from "@/components/primitives/Button";
 import {
   Popover,
   PopoverContent,
@@ -10,7 +11,10 @@ export const ColorPicker: ToolBarControlFC = ({ onChange, value }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button>COLOR {String(value)}</button>
+        <Button
+          className={"border border-input transition-none"}
+          style={{ backgroundColor: String(value || "transparent") }}
+        />
       </PopoverTrigger>
       <PopoverContent>
         <Sketch
