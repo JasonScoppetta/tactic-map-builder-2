@@ -1,7 +1,7 @@
 import { SvgSelectionRectangle } from "@/components/SvgSelectionRectangle";
 import { mergeRefs } from "@/helpers/mergeRef";
 import { useIsEditing } from "@/hooks/useIsEditing";
-import { useIsSpotSelected } from "@/hooks/useIsSpotSelected";
+import { useIsItemSelected } from "@/hooks/useIsItemSelected";
 import { Orientation, SpotItem } from "@/types";
 import * as React from "react";
 
@@ -40,7 +40,7 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
   const isHorizontal = orientation === "top" || orientation === "bottom";
 
   const isEmpty = spot.type === "Empty";
-  const isSelected = useIsSpotSelected(spot.id);
+  const isSelected = useIsItemSelected(spot.id, "spot");
 
   let circleCy = 28;
   let circleCx = 47;

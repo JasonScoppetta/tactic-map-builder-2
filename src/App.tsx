@@ -2,7 +2,7 @@ import { Layers } from "@/components/Layers/Layers";
 import { MapEditorProvider } from "@/components/Map/providers/MapEditorProvider/MapEditorProvider";
 import { cn } from "@/helpers/cn";
 import { Map } from "./components/Map/Map";
-import { SpotGroup as ISpotGroup } from "./types";
+import { MapText, SpotGroup as ISpotGroup } from "./types";
 import "./App.css";
 
 const spotGroups: ISpotGroup[] = [
@@ -349,12 +349,48 @@ const spotGroups: ISpotGroup[] = [
     ],
   },
 ];
+const texts: MapText[] = [
+  {
+    id: "4e9a0b66-071c-4eaf-8170-143aaccd386e",
+    x: 100,
+    y: 100,
+    text: "Text 1",
+    color: "#80C7DF",
+    fontSize: 22,
+  },
+  {
+    id: "2407be05-d5af-4eef-ba24-691df58e82f4",
+    x: 300,
+    y: 300,
+    text: "Text 2",
+    color: "#80C7DF",
+    fontSize: 22,
+  },
+  {
+    id: "290dcc17-a794-401f-82c7-f97011544eb8",
+    x: 500,
+    y: 500,
+    text: "Text 3",
+    color: "#80C7DF",
+    fontSize: 22,
+  },
+  {
+    id: "84084b5b-749f-481d-ae1b-bfa2b5ee19fa",
+    x: 800,
+    y: 100,
+    text: "Text 4",
+    color: "#80C7DF",
+    fontSize: 22,
+    fontWeight: "bold",
+  },
+];
 
 function App() {
   return (
     <MapEditorProvider
       value={{
         groups: spotGroups,
+        texts,
         width: 1300,
         height: 1138,
         gridSize: 10,

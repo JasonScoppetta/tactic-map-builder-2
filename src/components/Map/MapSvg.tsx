@@ -1,5 +1,6 @@
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import { useMap } from "@/components/Map/providers/MapProvider/context";
+import { MapText } from "@/components/MapText";
 import React from "react";
 import { SpotGroup } from "../SpotGroup/SpotGroup";
 import { SpotGroupLine } from "@/components/SpotGroupLine/SpotGroupLine";
@@ -57,6 +58,9 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
           height={map.height * scale}
         />
         <MapGrid />
+        {map.texts.map((text) => (
+          <MapText text={text} key={text.id} />
+        ))}
         {map.groups.map((group, groupIndex) => (
           <SpotGroup key={groupIndex} group={group}>
             {group.rows.map((row, rowIndex) => (

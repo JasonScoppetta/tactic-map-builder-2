@@ -1,5 +1,4 @@
-import { useIsSpotGroupSelected } from "@/hooks/useIsSpotGroupSelected";
-import { useSpotGroupEditorActions } from "@/components/SpotGroup/useSpotGroupEditorActions";
+import { useEditorItemGestures } from "@/hooks/useEditorItemGestures";
 import { SvgSelectionRectangle } from "@/components/SvgSelectionRectangle";
 import { cn } from "@/helpers/cn";
 import { mergeRefs } from "@/helpers/mergeRef";
@@ -13,9 +12,8 @@ export interface SpotGroupProps extends React.PropsWithChildren {
 export const SpotGroup = React.forwardRef<SVGSVGElement, SpotGroupProps>(
   function (props, ref) {
     const { group, children } = props;
-    const editorActions = useSpotGroupEditorActions(group);
+    const editorActions = useEditorItemGestures({ ...group, type: "group" });
     const groupRef = React.useRef<SVGGElement | null>(null);
-    const isSelected = useIsSpotGroupSelected(group.id);
 
     const rotation = React.useMemo(() => {
       if (!group.rotation || !groupRef.current) return "";
@@ -41,8 +39,9 @@ export const SpotGroup = React.forwardRef<SVGSVGElement, SpotGroupProps>(
         //style={{ transformOrigin: "center center" }}
       >
         <SvgSelectionRectangle
-          isSelected={isSelected}
+          isSelected={editorActions?.isSelected || false}
           targetRef={groupRef.current}
+          updateEventId={group.id}
         />
         {children}
       </g>

@@ -1,6 +1,6 @@
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 
-export const useIsSpotSelected = (groupId: string) => {
+export const useIsTextSelected = (textId: string) => {
   const editor = useMapEditor();
-  return editor?.selection?.[groupId] === "spot";
+  return editor?.selection?.[textId] === "text";
 };

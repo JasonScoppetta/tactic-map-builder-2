@@ -1,18 +1,20 @@
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import { useMap } from "@/components/Map/providers/MapProvider/context";
 import { useIsEditing } from "@/hooks/useIsEditing";
-import { GroupPosition, SpotGroup } from "@/types";
+import { useIsItemSelected } from "@/hooks/useIsItemSelected";
+import { EditorItemObject, ItemPosition } from "@/types";
 import { useDrag } from "@use-gesture/react";
 import React from "react";
 
-export const useSpotGroupEditorActions = (group: SpotGroup) => {
+export const useEditorItemGestures = (item: EditorItemObject) => {
   const { gridSize } = useMap();
   const editor = useMapEditor();
+  const isSelected = useIsItemSelected(item.id, item.type);
   const isEditing = useIsEditing();
 
-  const startPosition = React.useRef<GroupPosition & { isDragging: boolean }>({
-    x: group.x || 0,
-    y: group.y || 0,
+  const startPosition = React.useRef<ItemPosition & { isDragging: boolean }>({
+    x: item.x || 0,
+    y: item.y || 0,
     isDragging: false,
   });
 
@@ -27,20 +29,20 @@ export const useSpotGroupEditorActions = (group: SpotGroup) => {
       } = options;
 
       if (tap) {
-        editor?.updateSelection(group.id, "group", metaKey);
+        editor?.updateSelection(item.id, item.type, metaKey);
         return;
       }
 
       if (!startPosition.current.isDragging && dragging) {
         startPosition.current.isDragging = true;
-        startPosition.current.x = group.x;
-        startPosition.current.y = group.y;
-        editor?.startDraggingGroup(group.id);
+        startPosition.current.x = item.x;
+        startPosition.current.y = item.y;
+        editor?.startDraggingItem(item.id);
       }
 
       if (!down) {
         startPosition.current.isDragging = false;
-        editor?.endDraggingGroup();
+        editor?.endDraggingItem();
         return;
       }
 
@@ -52,7 +54,7 @@ export const useSpotGroupEditorActions = (group: SpotGroup) => {
 
       // Update position with snapped coordinates
       //setPosition({ x: snappedX, y: snappedY });
-      editor?.moveGroup(group.id, { x: snappedX, y: snappedY });
+      editor?.moveItem(item.id, item.type, { x: snappedX, y: snappedY });
     },
     { filterTaps: true },
   );
@@ -69,5 +71,6 @@ export const useSpotGroupEditorActions = (group: SpotGroup) => {
       };
       return events;
     },
+    isSelected,
   };
 };

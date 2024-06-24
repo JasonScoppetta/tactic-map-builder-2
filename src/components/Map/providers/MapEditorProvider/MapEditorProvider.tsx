@@ -5,12 +5,12 @@ import { getUuid } from "@/helpers/getUuid";
 import {
   AddSpotOptions,
   DraggingGuides,
-  GroupPosition,
+  GetSpotReturn,
+  ItemPosition,
   SelectionTargets,
   SelectionTargetType,
   SpotGroup,
   SpotItem,
-  SpotType,
 } from "@/types";
 import React from "react";
 import { MapEditorContext, MapEditorProviderProps } from "./context";
@@ -65,49 +65,71 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     );
   };
 
-  const startDraggingGroup = (id: string) => {
+  const startDraggingItem = (id: string) => {
     setDraggingGroup(id);
     updateGroupsPositions(id);
   };
 
-  const endDraggingGroup = () => {
+  const endDraggingItem = () => {
     setDraggingGroup(null);
     updateGroupsPositions();
     clearGuides();
   };
 
-  const moveGroup = (id: string, position: GroupPosition) => {
+  const moveItem = (
+    id: string,
+    type: SelectionTargetType,
+    position: ItemPosition,
+  ) => {
     setMapState((prev) => {
       if (!prev) return undefined;
       const group = prev.groups.find((g) => g.id === id);
-      if (!group) return prev;
 
-      setDraggingGuides({
-        x:
-          groupsInXPosition[position.x] &&
-          groupsInXPosition[position.x] === group.x
-            ? [position.x]
-            : [],
-        y:
-          groupsInYPosition[position.y] &&
-          groupsInYPosition[position.y] === group.y
-            ? [position.y]
-            : [],
-      });
+      if (group)
+        setDraggingGuides({
+          x:
+            groupsInXPosition[position.x] &&
+            groupsInXPosition[position.x] === group.x
+              ? [position.x]
+              : [],
+          y:
+            groupsInYPosition[position.y] &&
+            groupsInYPosition[position.y] === group.y
+              ? [position.y]
+              : [],
+        });
 
-      return {
-        ...prev,
-        groups: prev.groups.map((g) => {
-          if (g.id === id) {
-            return {
-              ...g,
-              x: position.x,
-              y: position.y,
-            };
-          }
-          return g;
-        }),
-      };
+      if (type === "group")
+        return {
+          ...prev,
+          groups: prev.groups.map((g) => {
+            if (g.id === id) {
+              return {
+                ...g,
+                x: position.x,
+                y: position.y,
+              };
+            }
+            return g;
+          }),
+        };
+
+      if (type === "text")
+        return {
+          ...prev,
+          texts: prev.texts.map((t) => {
+            if (t.id === id) {
+              return {
+                ...t,
+                x: position.x,
+                y: position.y,
+              };
+            }
+            return t;
+          }),
+        };
+
+      return prev;
     });
   };
 
@@ -133,13 +155,15 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
       type: options.type,
     } as SpotItem;
 
+    let updatedGroup: SpotGroup | undefined;
+
     setMapState((prev) => {
       if (!prev) return undefined;
       return {
         ...prev,
         groups: prev.groups.map((group) => {
           if (group.id === options.groupId) {
-            return {
+            const _group = {
               ...group,
               rows: group.rows.map((row) => {
                 if (row.id === options.rowId) {
@@ -151,11 +175,35 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
                 return row;
               }),
             };
+
+            updatedGroup = _group;
+
+            return _group;
           }
           return group;
         }),
       };
     });
+
+    events.dispatchEvent(
+      {
+        event: "add",
+        targetType: "spot",
+        id: newSpot.id,
+        spot: newSpot,
+      },
+      false,
+    );
+
+    events.dispatchEvent(
+      {
+        event: "update",
+        targetType: "group",
+        id: options.groupId,
+        group: updatedGroup,
+      },
+      false,
+    );
 
     return newSpot;
   };
@@ -223,19 +271,24 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     });
   };
 
-  const getSpot = (spotId: string) => {
-    let spot: SpotItem | undefined;
-    if (!mapState) return spot;
+  const getSpot = (spotId: string): GetSpotReturn | undefined => {
+    if (!mapState) return undefined;
 
     for (const group of mapState.groups) {
       for (const row of group.rows) {
-        spot = row.items.find((item) => item.id === spotId);
-        if (spot) break;
+        for (const item of row.items) {
+          if (item.id === spotId) {
+            return {
+              group,
+              row,
+              spot: item,
+            };
+          }
+        }
       }
-      if (spot) break;
     }
 
-    return spot;
+    return undefined;
   };
 
   React.useEffect(() => {
@@ -251,9 +304,9 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
       value={{
         ...rest,
         value: mapState,
-        moveGroup,
-        startDraggingGroup,
-        endDraggingGroup,
+        moveItem,
+        startDraggingItem,
+        endDraggingItem,
         updateSelection,
         clearSelection,
         addSpot,

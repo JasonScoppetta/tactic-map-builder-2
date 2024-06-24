@@ -5,9 +5,9 @@ export type EventType = "update" | "delete" | "add";
 export interface MapEditorEventData {
   event: EventType;
   targetType?: SelectionTargetType;
-  id?: string;
+  id?: EventResourceId;
   spot?: SpotItem;
-  spotGroup?: SpotGroup;
+  group?: SpotGroup;
 }
 export const EventResourceWildcard = "*";
 export type EventResourceId = string;
