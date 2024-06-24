@@ -145,15 +145,9 @@ export interface MapIcon {
   id: string;
   x: number;
   y: number;
-  icon: string;
-  iconSet: "mdi" | "lucide" | "custom";
+  icon: IconValue;
   color?: string;
-  size?: number;
-}
-
-export interface IconValue {
-  icon: string;
-  set: string;
+  fontSize?: number;
 }
 
 type RequiredMapProps = "groups" | "texts" | "icons" | "width" | "height";
@@ -168,6 +162,18 @@ export interface ToolBarControlsProps {
 export type ToolBarControlFC = FC<ToolBarControlsProps> & {
   // nothing here yet
 };
+
+export interface IconDictionaryItem {
+  icons: Record<string, string>;
+  keys: string[];
+}
+
+export type IconDictionaries = Record<string, IconDictionaryItem>;
+
+export interface IconValue {
+  icon: string;
+  set: string;
+}
 
 export type SelectionTarget =
   | MapText

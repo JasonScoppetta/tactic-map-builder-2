@@ -25,7 +25,8 @@ export const MapIcon: React.FC<MapIconProps> = ({ icon }) => {
       />
       <g ref={groupRef}>
         <IconFromSet
-          icon={{ icon: icon.icon, set: icon.iconSet }}
+          icon={icon.icon}
+          size={icon.fontSize || 8}
           color={icon.color}
         />
       </g>

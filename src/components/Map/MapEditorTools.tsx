@@ -2,6 +2,7 @@ import { IconFromSet } from "@/components/IconFromSet";
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import { ColorPicker } from "@/components/Map/toolbar-controls/ColorPicker";
 import { FontSize } from "@/components/Map/toolbar-controls/FontSize";
+import { IconPicker } from "@/components/Map/toolbar-controls/IconPicker";
 import {
   Select,
   SelectContent,
@@ -27,7 +28,7 @@ const toolsForType: Record<SelectionTargetType, Tool[]> = {
   spot: ["color", "textColor"],
   group: ["color", "textColor"],
   text: ["textColor", "fontSize", "fontFamily"],
-  icon: ["color", "icon"],
+  icon: ["color", "icon", "fontSize"],
 };
 
 const ToolsToComponents: Record<
@@ -48,6 +49,10 @@ const ToolsToComponents: Record<
   fontSize: {
     icon: { set: "lucide", icon: "Ruler" },
     component: FontSize,
+  },
+  icon: {
+    icon: { set: "lucide", icon: "Image" },
+    component: IconPicker,
   },
 };
 

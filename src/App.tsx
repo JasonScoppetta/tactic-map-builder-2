@@ -392,8 +392,7 @@ const icons: MapIcon[] = [
     id: "b918fc1e-1f71-4073-8cd8-09bb3110473c",
     x: 20,
     y: 20,
-    icon: "Clock",
-    iconSet: "lucide",
+    icon: { set: "lucide", icon: "Clock" },
   },
 ];
 
