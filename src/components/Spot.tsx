@@ -104,6 +104,7 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
             fill="#777"
             stroke="#fff"
             strokeWidth={8}
+            className={"hover:fill-primary hover:cursor-pointer"}
           />
         </>
       )}

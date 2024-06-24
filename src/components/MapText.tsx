@@ -28,7 +28,7 @@ export const MapText: React.FC<MapTextProps> = ({ text }) => {
           x={0}
           y={0}
           fontSize={text.fontSize}
-          fill={text.color}
+          fill={text.textColor}
           fontWeight={text.fontWeight}
           fontFamily={text.fontFamily}
           dominantBaseline={"hanging"}

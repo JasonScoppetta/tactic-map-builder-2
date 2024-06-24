@@ -1,5 +1,6 @@
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import { useMap } from "@/components/Map/providers/MapProvider/context";
+import { MapIcon } from "@/components/MapIcon";
 import { MapText } from "@/components/MapText";
 import React from "react";
 import { SpotGroup } from "../SpotGroup/SpotGroup";
@@ -58,8 +59,6 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
     updateViewBox(1);
   }, [updateViewBox]);
 
-  console.log("BOX", viewBox);
-
   return (
     <>
       {/*<div>
@@ -89,6 +88,9 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
           />
           {map.texts.map((text) => (
             <MapText text={text} key={text.id} />
+          ))}
+          {map.icons.map((icon) => (
+            <MapIcon icon={icon} key={icon.id} />
           ))}
           {map.groups.map((group, groupIndex) => (
             <SpotGroup key={groupIndex} group={group}>

@@ -1,4 +1,5 @@
 import { EventManager } from "@/helpers/event-manager";
+import { FC } from "react";
 
 export type Orientation = "top" | "bottom" | "left" | "right";
 export type GroupOrientation = "horizontal" | "vertical";
@@ -31,6 +32,7 @@ export interface ItemPosition {
 export interface MapState {
   groups: SpotGroup[];
   texts: MapText[];
+  icons: MapIcon[];
   gridSize: number;
   width: number;
   height: number;
@@ -69,7 +71,16 @@ export interface MapEditorMethods {
   addSpot: (options: AddSpotOptions) => SpotItem;
   updateGroup: (groupId: string, group: Partial<SpotGroup>) => void;
   updateSpot: (spotId: string, spot: Partial<SpotItem>) => void;
+  updateText: (textId: string, text: Partial<MapText>) => void;
+  updateIcon: (iconId: string, icon: Partial<MapIcon>) => void;
   getSpot: (spotId: string) => GetSpotReturn | undefined;
+  getItem: (id: string) => SelectionTarget | undefined;
+  updateItem: (
+    id: string,
+    type: SelectionTargetType,
+    property: string,
+    value: unknown,
+  ) => void;
 }
 
 export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
@@ -124,13 +135,43 @@ export interface MapText {
   x: number;
   y: number;
   text: string;
-  color?: string;
+  textColor?: string;
   fontSize?: number;
   fontFamily?: string;
   fontWeight?: string;
 }
 
-type RequiredMapProps = "groups" | "texts" | "width" | "height";
+export interface MapIcon {
+  id: string;
+  x: number;
+  y: number;
+  icon: string;
+  iconSet: "mdi" | "lucide" | "custom";
+  color?: string;
+  size?: number;
+}
+
+export interface IconValue {
+  icon: string;
+  set: string;
+}
+
+type RequiredMapProps = "groups" | "texts" | "icons" | "width" | "height";
 
 export type MapValue = Pick<MapState, RequiredMapProps> &
   Partial<Omit<MapState, RequiredMapProps>>;
+
+export interface ToolBarControlsProps {
+  value: unknown;
+  onChange: (value: unknown) => void;
+}
+export type ToolBarControlFC = FC<ToolBarControlsProps> & {
+  // nothing here yet
+};
+
+export type SelectionTarget =
+  | MapText
+  | MapIcon
+  | SpotItem
+  | SpotGroup
+  | SpotRow;

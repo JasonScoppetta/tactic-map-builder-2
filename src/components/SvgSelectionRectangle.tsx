@@ -27,8 +27,6 @@ export const SvgSelectionRectangle: React.FC<SvgSelectionRectangleProps> = ({
     if (!selectBoxRef) return;
     const groupSize = targetRef?.getBBox();
 
-    console.log(groupSize);
-
     selectBoxRef.setAttribute("width", String(groupSize?.width || 0));
     selectBoxRef.setAttribute("height", String(groupSize?.height || 0));
   }, [isSelected, selectBoxRef, targetRef]);

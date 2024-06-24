@@ -23,7 +23,7 @@ export const MapGrid: React.FC = () => {
           y1={0}
           x2={x}
           y2={height}
-          stroke="#ccc"
+          stroke="#e9e9e9"
           strokeWidth="1"
         />,
       );
@@ -38,7 +38,7 @@ export const MapGrid: React.FC = () => {
           y1={y}
           x2={width}
           y2={y}
-          stroke="#ccc"
+          stroke="#dedede"
           strokeWidth="1"
         />,
       );

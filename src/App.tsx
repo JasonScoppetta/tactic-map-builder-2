@@ -5,7 +5,7 @@ import { MapEditorProvider } from "@/components/Map/providers/MapEditorProvider/
 import { cn } from "@/helpers/cn";
 import React from "react";
 import { Map } from "./components/Map/Map";
-import { MapText, SpotGroup as ISpotGroup } from "./types";
+import { MapIcon, MapText, SpotGroup as ISpotGroup } from "./types";
 import "./App.css";
 
 const spotGroups: ISpotGroup[] = [
@@ -388,6 +388,16 @@ const texts: MapText[] = [
   },
 ];
 
+const icons: MapIcon[] = [
+  {
+    id: "b918fc1e-1f71-4073-8cd8-09bb3110473c",
+    x: 20,
+    y: 20,
+    icon: "Clock",
+    iconSet: "lucide",
+  },
+];
+
 function App() {
   const [containerRef, setContainerRef] =
     React.useState<HTMLDivElement | null>();
@@ -413,6 +423,7 @@ function App() {
       value={{
         groups: spotGroups,
         texts,
+        icons,
         width: 1300,
         height: 1138,
         gridSize: 10,

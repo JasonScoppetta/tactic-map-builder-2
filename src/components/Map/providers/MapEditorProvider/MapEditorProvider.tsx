@@ -6,6 +6,9 @@ import {
   DraggingGuides,
   GetSpotReturn,
   ItemPosition,
+  MapIcon,
+  MapText,
+  SelectionTarget,
   SelectionTargets,
   SelectionTargetType,
   SpotGroup,
@@ -128,6 +131,21 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
           }),
         };
 
+      if (type === "icon")
+        return {
+          ...prev,
+          icons: prev.icons.map((i) => {
+            if (i.id === id) {
+              return {
+                ...i,
+                x: position.x,
+                y: position.y,
+              };
+            }
+            return i;
+          }),
+        };
+
       return prev;
     });
   };
@@ -208,21 +226,36 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
   };
 
   const updateGroup = (groupId: string, group: Partial<SpotGroup>) => {
+    let updatedGroup: SpotGroup | undefined;
     setMapState((prev) => {
       if (!prev) return undefined;
       return {
         ...prev,
         groups: prev.groups.map((g) => {
           if (g.id === groupId) {
-            return {
+            const _group = {
               ...g,
               ...group,
             };
+
+            updatedGroup = _group;
+
+            return _group;
           }
           return g;
         }),
       };
     });
+
+    events.dispatchEvent(
+      {
+        event: "update",
+        targetType: "group",
+        id: groupId,
+        group: updatedGroup,
+      },
+      false,
+    );
   };
 
   const updateSpot = (spotId: string, spot: Partial<SpotItem>) => {
@@ -270,6 +303,129 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     });
   };
 
+  const updateText = (textId: string, text: Partial<MapText>) => {
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      let updatedText: MapText | undefined;
+      const newState = {
+        ...prev,
+        texts: prev.texts.map((t) => {
+          if (t.id === textId) {
+            const _text = {
+              ...t,
+              ...text,
+            };
+
+            updatedText = _text;
+
+            return _text;
+          }
+          return t;
+        }),
+      };
+
+      events.dispatchEvent(
+        {
+          event: "update",
+          targetType: "text",
+          id: textId,
+          text: updatedText,
+        },
+        false,
+      );
+
+      return newState;
+    });
+  };
+
+  const updateIcon = (iconId: string, icon: Partial<MapIcon>) => {
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      let updatedIcon: MapIcon | undefined;
+      const newState = {
+        ...prev,
+        icons: prev.icons.map((i) => {
+          if (i.id === iconId) {
+            const _icon = {
+              ...i,
+              ...icon,
+            };
+
+            updatedIcon = _icon;
+
+            return _icon;
+          }
+          return i;
+        }),
+      };
+
+      events.dispatchEvent(
+        {
+          event: "update",
+          targetType: "icon",
+          id: iconId,
+          icon: updatedIcon,
+        },
+        false,
+      );
+
+      return newState;
+    });
+  };
+
+  const updateItem = (
+    id: string,
+    type: SelectionTargetType,
+    property: string,
+    value: unknown,
+  ) => {
+    if (type === "group") {
+      updateGroup(id, { [property]: value });
+      return;
+    }
+
+    if (type === "spot") {
+      updateSpot(id, { [property]: value });
+      return;
+    }
+
+    if (type === "text") {
+      updateText(id, { [property]: value });
+      return;
+    }
+
+    if (type === "icon") {
+      updateIcon(id, { [property]: value });
+      return;
+    }
+  };
+
+  const getItem = (id: string): SelectionTarget | undefined => {
+    if (!mapState) return undefined;
+
+    for (const text of mapState.texts) {
+      if (text.id === id) return text;
+    }
+
+    for (const icon of mapState.icons) {
+      if (icon.id === id) return icon;
+    }
+
+    for (const group of mapState.groups) {
+      if (group.id === id) return group;
+      for (const row of group.rows) {
+        if (row.id === id) return row;
+        for (const item of row.items) {
+          if (item.id === id) {
+            return item;
+          }
+        }
+      }
+    }
+
+    return undefined;
+  };
+
   const getSpot = (spotId: string): GetSpotReturn | undefined => {
     if (!mapState) return undefined;
 
@@ -294,9 +450,9 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     updateGroupsPositions();
   }, []);
 
-  React.useEffect(() => {
+  setTimeout(() => {
     events.processQueue();
-  }, [events.queue.length]);
+  }, 1);
 
   return (
     <MapEditorContext.Provider
@@ -309,9 +465,13 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         updateSelection,
         clearSelection,
         addSpot,
+        updateItem,
         updateGroup,
         updateSpot,
+        updateText,
+        updateIcon,
         getSpot,
+        getItem,
         draggingGroup,
         guides: draggingGuides,
         selection,
