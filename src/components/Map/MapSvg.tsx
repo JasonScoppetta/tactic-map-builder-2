@@ -25,6 +25,7 @@ function calculateViewBox(
 
 interface ToolsState {
   start: { x: number; y: number };
+  startPosition: { x: number; y: number };
   isDragging: boolean;
   items: Record<string, { rect: DOMRect; type: SelectionTargetType }>;
 }
@@ -40,6 +41,7 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
   const mainSvgRef = React.useRef<SVGSVGElement>(null);
   const toolsState = React.useRef<ToolsState>({
     start: { x: 0, y: 0 },
+    startPosition: { x: 0, y: 0 },
     isDragging: false,
     items: {},
   });
@@ -50,6 +52,9 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
     viewBox: `0 0 ${map.width} ${map.height}`,
     viewBoxArray: [0, 0, map.width, map.height],
   }); // Initial viewBox dimensions
+
+  const defaultCursor =
+    editor?.selectedMainTool === "moveMap" ? "move" : "default";
 
   const handleZoomIn = () => {
     const newScale = scale * 1.2; // Increase scale by 20% (adjust as needed)
@@ -76,7 +81,7 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
         newHeight,
       );
       setViewBox({
-        viewBox: newViewBox,
+        viewBox: newViewBoxArray.join(" "),
         viewBoxArray: newViewBoxArray,
       });
     },
@@ -116,19 +121,75 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
   const handleMoveTool = (event: React.MouseEvent<SVGSVGElement>) => {
     const { clientX, clientY } = event;
     toolsState.current.start = { x: clientX, y: clientY };
+    toolsState.current.startPosition = {
+      x: viewBox.viewBoxArray[0],
+      y: viewBox.viewBoxArray[1],
+    };
 
     toolsState.current.isDragging = true;
+
+    window.addEventListener("mousemove", handleMoveToolMouseMove);
+    window.addEventListener("mouseup", () => {
+      window.removeEventListener("mousemove", handleMoveToolMouseMove);
+    });
+  };
+
+  const handleMoveToolMouseMove = (event: MouseEvent) => {
+    if (!editor?.isEditing) return;
+    if (!toolsState.current.isDragging) return;
+
+    window.addEventListener("mouseup", handleMoveToolMouseUp, true);
+
+    const { clientX, clientY } = event;
+    const startX = toolsState.current.start.x;
+    const startY = toolsState.current.start.y;
+    const deltaX = startX - clientX;
+    const deltaY = startY - clientY;
+
+    const newViewBox: [number, number, number, number] = [
+      toolsState.current.startPosition.x + deltaX,
+      toolsState.current.startPosition.y + deltaY,
+      viewBox.viewBoxArray[2],
+      viewBox.viewBoxArray[3],
+    ];
+
+    setViewBox({
+      viewBox: newViewBox.join(" "),
+      viewBoxArray: newViewBox,
+    });
+  };
+
+  const handleMoveToolMouseUp = (event: MouseEvent) => {
+    if (!editor?.isEditing) return;
+    if (!toolsState.current.isDragging) return;
+
+    event.stopPropagation();
+
+    toolsState.current.isDragging = false;
+
+    window.removeEventListener("mousemove", handleMoveToolMouseMove);
+    window.removeEventListener("mouseup", handleMoveToolMouseUp, true);
+
+    if (mainSvgRef.current) mainSvgRef.current.style.cursor = defaultCursor;
   };
 
   const handleMouseDown = (event: React.MouseEvent<SVGSVGElement>) => {
     if (!editor?.isEditing) return;
-    if (editor.selectedMainTool === "select") {
+    if (!mainSvgRef.current) return;
+    if (
+      (!event.metaKey && editor.selectedMainTool === "select") ||
+      (event.metaKey && editor.selectedMainTool === "moveMap")
+    ) {
       handleRectangleTool(event);
       return;
     }
 
-    if (editor.selectedMainTool === "moveMap") {
+    if (
+      editor.selectedMainTool === "moveMap" ||
+      (event.metaKey && editor.selectedMainTool === "select")
+    ) {
       handleMoveTool(event);
+      mainSvgRef.current.style.cursor = "move";
       return;
     }
   };
@@ -197,11 +258,36 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
 
     window.removeEventListener("mousemove", handleMouseMove);
     window.removeEventListener("mouseup", handleMouseUp, true);
+
+    if (mainSvgRef.current) mainSvgRef.current.style.cursor = defaultCursor;
   };
 
   React.useEffect(() => {
     updateViewBox(1);
   }, [updateViewBox]);
+
+  React.useEffect(() => {
+    const windowKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey && editor?.selectedMainTool === "select") {
+        mainSvgRef.current?.style.setProperty("cursor", "move");
+      }
+    };
+
+    const windowKeyUp = (event: KeyboardEvent) => {
+      if (toolsState.current.isDragging) return;
+      if (event.key === "Meta" && editor?.selectedMainTool === "select") {
+        mainSvgRef.current?.style.setProperty("cursor", "default");
+      }
+    };
+
+    window.addEventListener("keydown", windowKeyDown);
+    window.addEventListener("keyup", windowKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", windowKeyDown);
+      window.removeEventListener("keyup", windowKeyUp);
+    };
+  }, [editor?.selectedMainTool]);
 
   return (
     <>
@@ -218,6 +304,7 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
           editor?.clearSelection();
         }}
         ref={mainSvgRef}
+        style={{ cursor: defaultCursor }}
       >
         <MapGrid />
         <svg

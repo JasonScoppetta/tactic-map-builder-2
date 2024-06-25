@@ -21,6 +21,7 @@ import { getObjectKeys } from "@/helpers/getObjectKeys";
 import { sanitizeDep } from "@/helpers/sanitizeDep";
 import {
   IconValue,
+  MainMouseTool,
   SelectionTarget,
   SelectionTargetType,
   ToolBarControlFC,
@@ -162,7 +163,9 @@ export const MapEditorTools: React.FC = () => {
           <ToggleGroup
             type={"single"}
             value={editor?.selectedMainTool}
-            onValueChange={editor?.setMainMouseTool}
+            onValueChange={(value) =>
+              !!value && editor?.setMainMouseTool(value as MainMouseTool)
+            }
           >
             <ToggleGroupItem
               value={"select"}
