@@ -21,6 +21,7 @@ export const MapText: React.FC<MapTextProps> = ({ text }) => {
       <SvgSelectionRectangle
         isSelected={editorActions?.isSelected || false}
         targetRef={groupRef.current}
+        updateEventId={text?.id}
       />
       <g ref={groupRef}>
         <text

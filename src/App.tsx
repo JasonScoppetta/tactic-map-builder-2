@@ -358,7 +358,7 @@ const texts: MapText[] = [
     y: 100,
     text: "Text 1",
     textColor: "#80C7DF",
-    fontSize: 22,
+    fontSize: 24,
   },
   {
     id: "2407be05-d5af-4eef-ba24-691df58e82f4",
@@ -366,7 +366,7 @@ const texts: MapText[] = [
     y: 300,
     text: "Text 2",
     textColor: "#80C7DF",
-    fontSize: 22,
+    fontSize: 24,
   },
   {
     id: "290dcc17-a794-401f-82c7-f97011544eb8",
@@ -374,7 +374,7 @@ const texts: MapText[] = [
     y: 500,
     text: "Text 3",
     textColor: "#80C7DF",
-    fontSize: 22,
+    fontSize: 24,
   },
   {
     id: "84084b5b-749f-481d-ae1b-bfa2b5ee19fa",
@@ -382,7 +382,7 @@ const texts: MapText[] = [
     y: 100,
     text: "Text 4",
     textColor: "#80C7DF",
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "bold",
   },
 ];

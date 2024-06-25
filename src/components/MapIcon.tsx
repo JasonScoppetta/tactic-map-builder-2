@@ -22,6 +22,7 @@ export const MapIcon: React.FC<MapIconProps> = ({ icon }) => {
       <SvgSelectionRectangle
         isSelected={editorActions?.isSelected || false}
         targetRef={groupRef.current}
+        updateEventId={icon?.id}
       />
       <g ref={groupRef}>
         <IconFromSet

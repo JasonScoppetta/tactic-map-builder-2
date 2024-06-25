@@ -21,7 +21,7 @@ export const IconFromSet: React.FC<{
         fill={"none"}
       >
         <path
-          d={mdiIcons[iconName]}
+          d={mdiIcons[iconName as never]}
           style={{ fill: color || "currentColor" }}
         />
       </svg>

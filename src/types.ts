@@ -136,7 +136,7 @@ export interface MapText {
   y: number;
   text: string;
   textColor?: string;
-  fontSize?: number;
+  fontSize: number;
   fontFamily?: string;
   fontWeight?: string;
 }
