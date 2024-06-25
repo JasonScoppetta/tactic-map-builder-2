@@ -29,7 +29,9 @@ export const useEditorItemGestures = (item: EditorItemObject) => {
       } = options;
 
       if (tap) {
-        editor?.updateSelection(item.id, item.type, metaKey);
+        editor?.updateSelection(item.id, item.type, {
+          appendSelection: metaKey,
+        });
         return;
       }
 
@@ -48,13 +50,19 @@ export const useEditorItemGestures = (item: EditorItemObject) => {
 
       // Calculate snapped positions based on grid size
       const snappedX =
-        Math.round((startPosition.current.x + mx) / gridSize) * gridSize;
+        Math.round(/*startPosition.current.x*/ (0 + mx) / gridSize) * gridSize;
       const snappedY =
-        Math.round((startPosition.current.y + my) / gridSize) * gridSize;
+        Math.round(/*startPosition.current.y*/ (0 + my) / gridSize) * gridSize;
 
-      // Update position with snapped coordinates
-      //setPosition({ x: snappedX, y: snappedY });
-      editor?.moveItem(item.id, item.type, { x: snappedX, y: snappedY });
+      editor?.moveItem(
+        item.id,
+        item.type,
+        { x: snappedX, y: snappedY },
+        {
+          x: startPosition.current.x,
+          y: startPosition.current.y,
+        },
+      );
     },
     { filterTaps: true },
   );
@@ -65,9 +73,19 @@ export const useEditorItemGestures = (item: EditorItemObject) => {
     bindListeners: () => {
       const events = bindListeners();
       const eventClick = events.onClick;
+      const eventMouseDown = events.onMouseDown;
+      const eventMouseUp = events.onMouseUp;
       events.onClick = (e) => {
         e.stopPropagation();
         eventClick?.(e);
+      };
+      events.onMouseDown = (e) => {
+        e.stopPropagation();
+        eventMouseDown?.(e);
+      };
+      events.onMouseUp = (e) => {
+        e.stopPropagation();
+        eventMouseUp?.(e);
       };
       return events;
     },

@@ -1,11 +1,14 @@
 import { MapEditorSelectionTools } from "@/components/Map/MapEditorSelectionTools";
 import { EventManager } from "@/helpers/event-manager";
+import { getObjectKeys } from "@/helpers/getObjectKeys";
 import { getUuid } from "@/helpers/getUuid";
 import {
   AddSpotOptions,
   DraggingGuides,
   GetSpotReturn,
   ItemPosition,
+  ItemPositions,
+  MainMouseTool,
   MapIcon,
   MapText,
   SelectionTarget,
@@ -13,12 +16,16 @@ import {
   SelectionTargetType,
   SpotGroup,
   SpotItem,
+  UpdateSelectionOptions,
 } from "@/types";
 import React from "react";
 import { MapEditorContext, MapEditorProviderProps } from "./context";
 
 export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
   const { children, ...rest } = props;
+
+  const [selectedMainTool, setSelectedMainTool] =
+    React.useState<MainMouseTool>("select");
 
   const events = React.useMemo(() => {
     return new EventManager();
@@ -32,6 +39,8 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     x: [],
     y: [],
   });
+  const [dragStartPositions, setDragStartPositions] =
+    React.useState<ItemPositions>();
 
   const [groupsInYPosition, setGroupsInYPosition] = React.useState<
     Record<number, number>
@@ -67,40 +76,43 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     );
   };
 
+  const updateItemPosition = (id: string) => {
+    setDragStartPositions((prev) => {
+      const positions = { ...prev };
+      const item = getItem(id);
+      if (!item) return positions;
+      if ("x" in item && "y" in item) {
+        positions[id] = {
+          x: item?.x || 0,
+          y: item?.y || 0,
+        };
+      }
+      console.log(positions);
+
+      return positions;
+    });
+  };
+
   const startDraggingItem = (id: string) => {
     setDraggingGroup(id);
     updateGroupsPositions(id);
+    //updateItemPosition(id);
   };
 
   const endDraggingItem = () => {
     setDraggingGroup(null);
     updateGroupsPositions();
     clearGuides();
+    _updateSelectionPositions(selection);
   };
 
-  const moveItem = (
+  const _moveItem = (
     id: string,
     type: SelectionTargetType,
     position: ItemPosition,
   ) => {
     setMapState((prev) => {
       if (!prev) return undefined;
-      const group = prev.groups.find((g) => g.id === id);
-
-      if (group)
-        setDraggingGuides({
-          x:
-            groupsInXPosition[position.x] &&
-            groupsInXPosition[position.x] === group.x
-              ? [position.x]
-              : [],
-          y:
-            groupsInYPosition[position.y] &&
-            groupsInYPosition[position.y] === group.y
-              ? [position.y]
-              : [],
-        });
-
       if (type === "group")
         return {
           ...prev,
@@ -150,16 +162,92 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     });
   };
 
+  const moveItem = (
+    id: string,
+    type: SelectionTargetType,
+    position: ItemPosition,
+    startPosition?: ItemPosition,
+  ) => {
+    /*setMapState((prev) => {
+      if (!prev) return undefined;
+      const group = prev.groups.find((g) => g.id === id);
+
+      if (group)
+        setDraggingGuides({
+          x:
+            groupsInXPosition[position.x] &&
+            groupsInXPosition[position.x] === group.x
+              ? [position.x]
+              : [],
+          y:
+            groupsInYPosition[position.y] &&
+            groupsInYPosition[position.y] === group.y
+              ? [position.y]
+              : [],
+        });
+
+      return prev;
+    });*/
+
+    getObjectKeys(selection).forEach((id) => {
+      const selectionItemType = selection[id];
+      _moveItem(id, selectionItemType, {
+        x: (dragStartPositions?.[id]?.x || 0) + position.x,
+        y: (dragStartPositions?.[id]?.y || 0) + position.y,
+      });
+    });
+
+    if (!isItemSelected(id)) {
+      _moveItem(id, type, {
+        x: (startPosition?.x || 0) + position.x,
+        y: (startPosition?.y || 0) + position.y,
+      });
+    }
+  };
+
+  const _updateSelectionPositions = (selection: SelectionTargets) => {
+    setDragStartPositions(() => {
+      const positions: ItemPositions = {};
+      getObjectKeys(selection).forEach((id) => {
+        const item = getItem(id);
+        if (!item) return;
+        if ("x" in item && "y" in item) {
+          positions[id] = {
+            x: item?.x || 0,
+            y: item?.y || 0,
+          };
+        }
+      });
+
+      return positions;
+    });
+  };
+
   const updateSelection = (
     id: string,
     targetType: SelectionTargetType,
-    appendSelection?: boolean,
+    options?: UpdateSelectionOptions,
   ) => {
-    if (appendSelection) {
-      setSelection((prev) => ({ ...prev, [id]: targetType }));
+    const { appendSelection = false, removeSelection = false } = options || {};
+    if (removeSelection) {
+      setSelection((prev) => {
+        const { [id]: _, ...rest } = prev;
+        _updateSelectionPositions(rest);
+        return rest;
+      });
       return;
     }
-    setSelection({ [id]: targetType });
+    if (appendSelection) {
+      setSelection((prev) => {
+        const newSelection = { ...prev, [id]: targetType };
+        _updateSelectionPositions(newSelection);
+        return newSelection;
+      });
+      return;
+    }
+    const newSelection = { [id]: targetType };
+    _updateSelectionPositions(newSelection);
+    setSelection(newSelection);
   };
 
   const clearSelection = () => {
@@ -446,6 +534,11 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     return undefined;
   };
 
+  const isItemSelected = (id: string | undefined) => {
+    if (!id) return false;
+    return !!selection[id];
+  };
+
   React.useEffect(() => {
     updateGroupsPositions();
   }, []);
@@ -459,6 +552,13 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
       value={{
         ...rest,
         value: mapState,
+        draggingGroup,
+        guides: draggingGuides,
+        selection,
+        events,
+        selectedMainTool,
+
+        // Methods
         moveItem,
         startDraggingItem,
         endDraggingItem,
@@ -472,10 +572,9 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         updateIcon,
         getSpot,
         getItem,
-        draggingGroup,
-        guides: draggingGuides,
-        selection,
-        events,
+        isItemSelected,
+        updateItemPosition,
+        setMainMouseTool: setSelectedMainTool,
       }}
     >
       <MapEditorSelectionTools />

@@ -81,7 +81,11 @@
 }
 
 * {
-  font-family: 'sofia-pro-soft', system-ui, sans-serif !important;
+  font-family: 'sofia-pro-soft', system-ui, sans-serif;
+}
+
+svg * {
+  font-family: 'Quicksand', system-ui, sans-serif;
 }
 
 @layer base {

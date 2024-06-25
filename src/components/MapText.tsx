@@ -14,6 +14,7 @@ export const MapText: React.FC<MapTextProps> = ({ text }) => {
   return (
     <g
       className={"map-text touch-none"}
+      data-selection-type={"text"}
       data-text-id={text.id}
       transform={`translate(${text.x}, ${text.y})`}
       {...editorActions?.bindListeners()}
@@ -33,6 +34,7 @@ export const MapText: React.FC<MapTextProps> = ({ text }) => {
           fontFamily={text.fontFamily}
           dominantBaseline={"hanging"}
           className={"touch-none select-none"}
+          style={{ fontFamily: text.fontFamily }}
         >
           {text.text}
         </text>

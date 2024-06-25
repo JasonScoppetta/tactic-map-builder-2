@@ -3,6 +3,7 @@ import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/conte
 import { ColorPicker } from "@/components/Map/toolbar-controls/ColorPicker";
 import { FontSize } from "@/components/Map/toolbar-controls/FontSize";
 import { IconPicker } from "@/components/Map/toolbar-controls/IconPicker";
+import { SpotType } from "@/components/Map/toolbar-controls/SpotType";
 import {
   Select,
   SelectContent,
@@ -10,6 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/primitives/select";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/primitives/toggle-group";
 import { MapEditorEventData } from "@/helpers/event-manager";
 import { getItemLabel } from "@/helpers/getItemLabel";
 import { getObjectKeys } from "@/helpers/getObjectKeys";
@@ -22,11 +27,18 @@ import {
 } from "@/types";
 import React from "react";
 
-type Tool = "color" | "textColor" | "fontSize" | "fontFamily" | "icon" | "text";
+type Tool =
+  | "color"
+  | "textColor"
+  | "fontSize"
+  | "fontFamily"
+  | "icon"
+  | "text"
+  | "type";
 
 const toolsForType: Record<SelectionTargetType, Tool[]> = {
   spot: ["color", "textColor"],
-  group: ["color", "textColor"],
+  group: ["color", "textColor", "type"],
   text: ["textColor", "fontSize", "fontFamily"],
   icon: ["color", "icon", "fontSize"],
 };
@@ -53,6 +65,10 @@ const ToolsToComponents: Record<
   icon: {
     icon: { set: "lucide", icon: "Image" },
     component: IconPicker,
+  },
+  type: {
+    icon: { set: "lucide", icon: "Armchair" },
+    component: SpotType,
   },
 };
 
@@ -143,6 +159,23 @@ export const MapEditorTools: React.FC = () => {
     >
       <div className={"flex gap-4 items-center"}>
         <div>
+          <ToggleGroup
+            type={"single"}
+            value={editor?.selectedMainTool}
+            onValueChange={editor?.setMainMouseTool}
+          >
+            <ToggleGroupItem
+              value={"select"}
+              icon={{ set: "lucide", icon: "BoxSelect" }}
+            />
+            <ToggleGroupItem
+              value={"moveMap"}
+              icon={{ set: "lucide", icon: "Move" }}
+            />
+          </ToggleGroup>
+        </div>
+        <div className={"mx-4 border-l h-6"}></div>
+        <div>
           <Select value={selectedLayer} onValueChange={setSelectedLayer}>
             <SelectTrigger className={"w-[140px]"}>
               <SelectValue />
@@ -162,7 +195,9 @@ export const MapEditorTools: React.FC = () => {
           const ToolComponent = ToolsToComponents[tool].component;
           return (
             <div className={"flex gap-4 items-center"} key={tool}>
-              <IconFromSet icon={ToolsToComponents[tool].icon} size={6} />
+              <div>
+                <IconFromSet icon={ToolsToComponents[tool].icon} size={6} />
+              </div>
               <ToolComponent
                 value={values?.[tool] || undefined}
                 onChange={handleChangeValue.bind(null, tool)}

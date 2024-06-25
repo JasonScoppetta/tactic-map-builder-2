@@ -54,18 +54,24 @@ export interface AddSpotOptions {
   type: SpotType;
 }
 
+export interface UpdateSelectionOptions {
+  appendSelection?: boolean;
+  removeSelection?: boolean;
+}
+
 export interface MapEditorMethods {
   moveItem: (
     id: string,
     type: SelectionTargetType,
     position: ItemPosition,
+    startPosition?: ItemPosition,
   ) => void;
   startDraggingItem: (id: string) => void;
   endDraggingItem: () => void;
   updateSelection: (
     id: string,
     targetType: SelectionTargetType,
-    appendSelection?: boolean,
+    options?: UpdateSelectionOptions,
   ) => void;
   clearSelection: () => void;
   addSpot: (options: AddSpotOptions) => SpotItem;
@@ -81,6 +87,9 @@ export interface MapEditorMethods {
     property: string,
     value: unknown,
   ) => void;
+  isItemSelected: (id: string | undefined) => boolean;
+  updateItemPosition: (id: string) => void;
+  setMainMouseTool: (tool: MainMouseTool) => void;
 }
 
 export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
@@ -88,15 +97,21 @@ export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
   draggingGroup: string | null;
   selection: SelectionTargets;
   events: EventManager;
+  selectedMainTool: MainMouseTool;
 }
 
-export type SpotType = "Desk" | "Empty";
+export type SpotType = "Desk" | "Empty" | "Spot";
+export enum SpotTypes {
+  Desk = "Desk",
+  Empty = "Empty",
+  Spot = "Spot",
+}
 
 export interface SpotAttributes {
   orientation?: Orientation;
   color?: string;
   textColor?: string;
-  type: SpotType;
+  type?: SpotType;
   paddingX?: number;
   paddingY?: number;
 }
@@ -128,6 +143,7 @@ export interface SpotGroup {
   rotation?: number;
   color?: string;
   textColor?: string;
+  type?: string;
 }
 
 export interface MapText {
@@ -175,9 +191,13 @@ export interface IconValue {
   set: string;
 }
 
+export type ItemPositions = Record<string, { x: number; y: number }>;
+
 export type SelectionTarget =
   | MapText
   | MapIcon
   | SpotItem
   | SpotGroup
   | SpotRow;
+
+export type MainMouseTool = "select" | "moveMap";

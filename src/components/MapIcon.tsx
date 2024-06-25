@@ -15,6 +15,7 @@ export const MapIcon: React.FC<MapIconProps> = ({ icon }) => {
   return (
     <g
       className={"map-icon touch-none"}
+      data-selection-type={"icon"}
       data-icon-id={icon.id}
       transform={`translate(${icon.x}, ${icon.y})`}
       {...editorActions?.bindListeners()}

@@ -28,6 +28,7 @@ export const SpotGroupLine = React.forwardRef<
           textColor={item.textColor || row.textColor || group.textColor}
           spot={item}
           label={item.label}
+          type={item.type || group.type || "Desk"}
         />
       ))}
     </g>

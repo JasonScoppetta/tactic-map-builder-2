@@ -16,6 +16,8 @@ export const LayerIconItem: React.FC<LayerIconItemProps> = ({
     <LayerItem
       preview={<SvgGroupPreview targetType={"icon"} targetId={icon.id} />}
       indentation={indentation}
+      selectionId={icon.id}
+      selectionType={"icon"}
     >
       <div>{icon.icon.icon}</div>
     </LayerItem>

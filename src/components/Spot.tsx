@@ -17,6 +17,7 @@ export interface SpotProps {
   spot: SpotItem;
   color?: string;
   textColor?: string;
+  type?: string;
   label?: string;
 }
 export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
@@ -31,22 +32,23 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
     color = "#C0F",
     label,
     textColor,
+    type,
   } = props;
 
   const groupRef = React.useRef<SVGGElement | null>(null);
 
-  const isBottom = orientation === "bottom";
-  const isRight = orientation === "right";
+  const isEmpty = type === "Empty";
+  const isSpot = type === "Spot";
+  const isBottom = !isSpot && orientation === "bottom";
+  const isRight = !isSpot && orientation === "right";
   const isHorizontal = orientation === "top" || orientation === "bottom";
-
-  const isEmpty = spot.type === "Empty";
   const isSelected = useIsItemSelected(spot.id, "spot");
 
   let circleCy = 28;
-  let circleCx = 47;
+  let circleCx = 50;
   let rectX = 2;
   let rectY = 40;
-  let labelX = 45;
+  let labelX = 50;
   let labelY = 78;
   let fullHeight = 90;
 
@@ -54,7 +56,7 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
   let rectHeight = spotHeight;
 
   if (isHorizontal && isBottom) {
-    circleCy = 56;
+    if (!isSpot) circleCy = 56;
     labelY = 16;
     rectY = 0;
   } else if (!isHorizontal) {
@@ -68,11 +70,11 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
     if (isRight) {
       labelX = 14;
       rectX = 2;
-      circleCx = 58;
+      if (!isSpot) circleCx = 58;
     } else {
       labelX = 81;
       rectX = 46;
-      circleCx = 36;
+      if (!isSpot) circleCx = 36;
     }
   }
 
@@ -87,7 +89,7 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
         isSelected={isSelected}
         targetRef={groupRef.current}
       />
-      {spot.type === "Desk" && (
+      {type === "Desk" && (
         <>
           <rect
             width={rectWidth}
@@ -108,7 +110,28 @@ export const Spot = React.forwardRef<SVGSVGElement, SpotProps>((props, ref) => {
           />
         </>
       )}
-      {spot.type === "Empty" && isEditing && (
+      {type === "Spot" && (
+        <>
+          <rect
+            width={isHorizontal ? spotWidth : spotHeight}
+            height={isHorizontal ? spotHeight : spotWidth}
+            x={rectX}
+            y={rectY}
+            fill={"transparent"}
+            rx={2}
+          />
+          <circle
+            cx={circleCx}
+            cy={circleCy}
+            r={28}
+            fill="#777"
+            stroke="#fff"
+            strokeWidth={8}
+            className={"hover:fill-primary hover:cursor-pointer"}
+          />
+        </>
+      )}
+      {type === "Empty" && isEditing && (
         <>
           <rect
             width={rectWidth}

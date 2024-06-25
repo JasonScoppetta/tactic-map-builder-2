@@ -7,7 +7,8 @@ import {
   ContextMenuSubTrigger,
 } from "@/components/primitives/context-menu";
 import { MapEditorEventData } from "@/helpers/event-manager";
-import { GetSpotReturn, Orientation, SpotType } from "@/types";
+import { getEnumKeys } from "@/helpers/getObjectKeys";
+import { GetSpotReturn, Orientation, SpotType, SpotTypes } from "@/types";
 import React from "react";
 
 export interface SpotContextMenuItemsProps {
@@ -20,7 +21,7 @@ export const SpotContextMenuItems: React.FC<SpotContextMenuItemsProps> = ({
   const editor = useMapEditor();
   const [spot, setSpot] = React.useState<GetSpotReturn | undefined>();
 
-  const handleSetType = (type: SpotType) => {
+  const handleSetType = (type: SpotType | undefined) => {
     editor?.updateSpot(id, { type });
   };
 
@@ -52,17 +53,21 @@ export const SpotContextMenuItems: React.FC<SpotContextMenuItemsProps> = ({
         <ContextMenuSubTrigger>Change type</ContextMenuSubTrigger>
         <ContextMenuSubContent>
           <ContextMenuCheckboxItem
-            checked={spot?.spot?.type === "Desk"}
-            onClick={handleSetType.bind(null, "Desk")}
+            checked={!spot?.spot?.type}
+            onClick={handleSetType.bind(null, undefined)}
           >
-            Desk
+            Inherit
           </ContextMenuCheckboxItem>
-          <ContextMenuCheckboxItem
-            checked={spot?.spot?.type === "Empty"}
-            onClick={handleSetType.bind(null, "Empty")}
-          >
-            Empty
-          </ContextMenuCheckboxItem>
+          <ContextMenuSeparator />
+          {getEnumKeys(SpotTypes).map((type) => (
+            <ContextMenuCheckboxItem
+              key={type}
+              checked={spot?.spot?.type === type}
+              onClick={handleSetType.bind(null, type as SpotType)}
+            >
+              {type}
+            </ContextMenuCheckboxItem>
+          ))}
         </ContextMenuSubContent>
       </ContextMenuSub>
       <ContextMenuSub>
