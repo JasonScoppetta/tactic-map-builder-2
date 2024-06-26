@@ -3,7 +3,7 @@ import { FC } from "react";
 
 export type Orientation = "top" | "bottom" | "left" | "right";
 export type GroupOrientation = "horizontal" | "vertical";
-export type SelectionTargetType = "group" | "spot" | "text" | "icon";
+export type SelectionTargetType = "group" | "spot" | "text" | "icon" | "row";
 export type SelectionTargets = Record<string, SelectionTargetType>;
 
 export interface EditorItemObject {
@@ -51,7 +51,19 @@ export interface AddSpotOptions {
   rowId?: string;
   afterSpotId?: string;
   beforeSpotId?: string;
-  type: SpotType;
+  type?: SpotType;
+}
+
+export interface AddRowOptions {
+  groupId: string;
+  afterRowId?: string;
+  beforeRowId?: string;
+}
+
+export interface DeleteRwOptions {
+  groupId: string;
+  rowId: string;
+  fixRowsOrientation?: boolean;
 }
 
 export interface UpdateSelectionOptions {
@@ -75,12 +87,14 @@ export interface MapEditorMethods {
   ) => void;
   clearSelection: () => void;
   addSpot: (options: AddSpotOptions) => SpotItem;
+  addRow: (options: AddRowOptions) => SpotRow | undefined;
   updateGroup: (groupId: string, group: Partial<SpotGroup>) => void;
   updateSpot: (spotId: string, spot: Partial<SpotItem>) => void;
   updateText: (textId: string, text: Partial<MapText>) => void;
   updateIcon: (iconId: string, icon: Partial<MapIcon>) => void;
   getSpot: (spotId: string) => GetSpotReturn | undefined;
   getItem: (id: string) => SelectionTarget | undefined;
+  deleteRow: (options: DeleteRwOptions) => void;
   updateItem: (
     id: string,
     type: SelectionTargetType,

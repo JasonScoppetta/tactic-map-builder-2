@@ -11,6 +11,8 @@ export interface LayerGroupProps extends React.PropsWithChildren {
   isRoot?: boolean;
   selectionId?: string;
   selectionType?: SelectionTargetType;
+  onAdd?: () => void;
+  onDelete?: () => void;
 }
 
 export const LayerGroup: React.FC<LayerGroupProps> = ({
@@ -20,6 +22,8 @@ export const LayerGroup: React.FC<LayerGroupProps> = ({
   isRoot,
   selectionId,
   selectionType,
+  onAdd,
+  onDelete,
 }) => {
   const editor = useMapEditor();
   const bindEvents = useGesture(
@@ -55,11 +59,22 @@ export const LayerGroup: React.FC<LayerGroupProps> = ({
           {title}
         </div>
         <div className={"flex h-full"}>
-          <Button
-            variant={"ghost"}
-            icon={"Plus"}
-            className={"h-full rounded-none px-2"}
-          />
+          {onAdd && (
+            <Button
+              variant={"ghost"}
+              icon={"Plus"}
+              className={"h-full rounded-none px-2"}
+              onClick={onAdd}
+            />
+          )}
+          {onDelete && (
+            <Button
+              variant={"ghost"}
+              icon={"Trash"}
+              className={"h-full rounded-none px-2"}
+              onClick={onDelete}
+            />
+          )}
         </div>
       </div>
       {children}

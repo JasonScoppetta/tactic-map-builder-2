@@ -3,7 +3,9 @@ import { EventManager } from "@/helpers/event-manager";
 import { getObjectKeys } from "@/helpers/getObjectKeys";
 import { getUuid } from "@/helpers/getUuid";
 import {
+  AddRowOptions,
   AddSpotOptions,
+  DeleteRwOptions,
   DraggingGuides,
   GetSpotReturn,
   ItemPosition,
@@ -16,6 +18,7 @@ import {
   SelectionTargetType,
   SpotGroup,
   SpotItem,
+  SpotRow,
   UpdateSelectionOptions,
 } from "@/types";
 import React from "react";
@@ -314,6 +317,74 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     return newSpot;
   };
 
+  const addRow = (options: AddRowOptions) => {
+    const { groupId } = options;
+    const group = mapState?.groups.find((g) => g.id === groupId);
+    if (!group) return;
+
+    const lastRowInGroup = group.rows?.[group.rows.length - 1];
+    const isGroupVertical = group.orientation === "vertical";
+    let rowOrientation: SpotRow["orientation"] = isGroupVertical
+      ? "left"
+      : "top";
+
+    if (isGroupVertical && lastRowInGroup?.orientation === "left") {
+      rowOrientation = "right";
+    } else if (!isGroupVertical && lastRowInGroup?.orientation === "top") {
+      rowOrientation = "bottom";
+    }
+
+    const newRow: SpotRow = {
+      id: getUuid(),
+      items: [],
+      orientation: rowOrientation,
+    } as SpotRow;
+
+    let updatedGroup: SpotGroup | undefined;
+
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        groups: prev.groups.map((group) => {
+          if (group.id === groupId) {
+            const _group = {
+              ...group,
+              rows: group.rows.concat(newRow),
+            };
+
+            updatedGroup = _group;
+
+            return _group;
+          }
+          return group;
+        }),
+      };
+    });
+
+    events.dispatchEvent(
+      {
+        event: "add",
+        targetType: "row",
+        id: newRow.id,
+        row: newRow,
+      },
+      false,
+    );
+
+    events.dispatchEvent(
+      {
+        event: "update",
+        targetType: "group",
+        id: groupId,
+        group: updatedGroup,
+      },
+      false,
+    );
+
+    return newRow;
+  };
+
   const updateGroup = (groupId: string, group: Partial<SpotGroup>) => {
     let updatedGroup: SpotGroup | undefined;
     setMapState((prev) => {
@@ -535,6 +606,87 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     return undefined;
   };
 
+  const fixRowsOrientation = (group: SpotGroup) => {
+    const isGroupVertical = group.orientation === "vertical";
+    const newGroup = { ...group };
+    if (!newGroup.rows[0]) return newGroup;
+    let currentOrientation = newGroup.rows[0].orientation;
+
+    if (
+      isGroupVertical &&
+      (currentOrientation === "top" || currentOrientation === "bottom")
+    ) {
+      currentOrientation = "left";
+    } else if (
+      !isGroupVertical &&
+      (currentOrientation === "left" || currentOrientation === "right")
+    ) {
+      currentOrientation = "top";
+    }
+
+    newGroup.rows = newGroup.rows.map((row) => {
+      let spotRow: SpotRow = row;
+      spotRow = {
+        ...spotRow,
+        orientation: currentOrientation,
+      };
+
+      if (isGroupVertical) {
+        currentOrientation = currentOrientation === "left" ? "right" : "left";
+      } else {
+        currentOrientation = currentOrientation === "top" ? "bottom" : "top";
+      }
+
+      return spotRow;
+    });
+
+    return newGroup;
+  };
+
+  const deleteRow = (options: DeleteRwOptions) => {
+    const { groupId, rowId, fixRowsOrientation: fixOrientation } = options;
+    let updatedGroup: SpotGroup | undefined;
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        groups: prev.groups.map((group) => {
+          if (group.id === groupId) {
+            const _group = {
+              ...group,
+              rows: group.rows.filter((row) => row.id !== rowId),
+            };
+
+            updatedGroup =
+              fixOrientation !== false ? fixRowsOrientation(_group) : _group;
+
+            return updatedGroup;
+          }
+          return group;
+        }),
+      };
+    });
+
+    events.dispatchEvent(
+      {
+        event: "delete",
+        targetType: "row",
+        id: rowId,
+      },
+      false,
+    );
+
+    events.dispatchEvent(
+      {
+        event: "update",
+        targetType: "group",
+        id: groupId,
+        group: updatedGroup,
+      },
+      false,
+    );
+  };
+
   const isItemSelected = (id: string | undefined) => {
     if (!id) return false;
     return !!selection[id];
@@ -567,11 +719,13 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         updateSelection,
         clearSelection,
         addSpot,
+        addRow,
         updateItem,
         updateGroup,
         updateSpot,
         updateText,
         updateIcon,
+        deleteRow,
         getSpot,
         getItem,
         isItemSelected,

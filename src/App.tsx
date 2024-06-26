@@ -1,3 +1,4 @@
+import { AssignDeskNamesForm } from "@/components/editor/AssignDeskNamesForm";
 import { Layers } from "@/components/Layers/Layers";
 import { MapEditorContextualMenu } from "@/components/Map/contextual-menu/MapEditorContextualMenu";
 import { MapEditorTools } from "@/components/Map/MapEditorTools";
@@ -415,6 +416,7 @@ function App() {
           </MapEditorContextualMenu>
         </div>
       </div>
+      <AssignDeskNamesForm />
     </MapEditorProvider>
   );
 }

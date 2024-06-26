@@ -1,6 +1,7 @@
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import { Icon } from "@/components/primitives/Icon";
 import { getObjectKeys } from "@/helpers/getObjectKeys";
+import { sanitizeDep } from "@/helpers/sanitizeDep";
 import { useEditorSelectionBoundingRect } from "@/hooks/useEditorSelectionBoundingRect";
 import React from "react";
 
@@ -12,20 +13,22 @@ export const MapEditorSelectionTools = () => {
     (key) => editor?.selection[key] === "group",
   );
   const isSingleSelect = selection.length === 1;
+  const sanitedSelection = sanitizeDep(selection);
 
   const group = React.useMemo(() => {
     if (!isSingleSelect) return undefined;
     return editor?.value?.groups.find((group) => group.id === selection[0]);
-  }, [selection, isSingleSelect]);
+  }, [sanitedSelection, isSingleSelect]);
   const rows = group?.rows || [];
 
   function addSpotToRow(rowId: string) {
     editor?.addSpot({
       groupId: selection[0],
-      type: "Desk",
       rowId,
     });
   }
+
+  React.useEffect(() => {}, [sanitedSelection]);
 
   if (!group) return null;
 

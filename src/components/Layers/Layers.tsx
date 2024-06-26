@@ -9,6 +9,24 @@ export const Layers: React.FC = () => {
   const editor = useMapEditor();
   if (!editor) return null;
 
+  const handleAddSpotToRow = (groupId: string, rowId: string) => {
+    editor?.addSpot({
+      groupId,
+      rowId,
+    });
+  };
+
+  const handleAddRowToGroup = (groupId: string) => {
+    const newRow = editor?.addRow({ groupId });
+    if (newRow) {
+      handleAddSpotToRow(groupId, newRow.id);
+    }
+  };
+
+  const handleDeleteRow = (groupId: string, rowId: string) => {
+    editor?.deleteRow({ groupId, rowId });
+  };
+
   return (
     <div className={"flex flex-col"}>
       <LayerGroup title={"Text"} isRoot>
@@ -33,12 +51,15 @@ export const Layers: React.FC = () => {
             indentation={1}
             selectionType={"group"}
             selectionId={group.id}
+            onAdd={() => handleAddRowToGroup(group.id)}
           >
             {group.rows.map((row, rowIndex) => (
               <LayerGroup
                 title={"Row " + (rowIndex + 1)}
                 key={row.id}
                 indentation={2}
+                onAdd={() => handleAddSpotToRow(group.id, row.id)}
+                onDelete={() => handleDeleteRow(group.id, row.id)}
               >
                 {row.items.map((item) => (
                   <LayerSpotItem indentation={2} key={item.id} spot={item}>

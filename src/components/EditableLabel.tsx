@@ -50,7 +50,7 @@ export const EditableLabel: React.FC<EditableLabelProps> = ({
   }, [isEditing.state, hasInputFocused.state, inputRef.current]);
 
   return (
-    <div className={"flex-1 mr-4"} {...bindEvents()}>
+    <div className={"flex-1 mr-4 min-h-7"} {...bindEvents()}>
       {isEditing.state ? (
         <>
           <input

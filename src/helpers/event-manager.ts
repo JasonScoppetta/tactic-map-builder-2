@@ -4,6 +4,7 @@ import {
   SelectionTargetType,
   SpotGroup,
   SpotItem,
+  SpotRow,
 } from "@/types";
 
 export type EventType = "update" | "delete" | "add";
@@ -16,6 +17,7 @@ export interface MapEditorEventData {
   group?: SpotGroup;
   text?: MapText;
   icon?: MapIcon;
+  row?: SpotRow;
 }
 export const EventResourceWildcard = "*";
 export type EventResourceId = string;
