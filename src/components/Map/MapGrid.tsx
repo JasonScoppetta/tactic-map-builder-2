@@ -3,8 +3,10 @@ import { useMap } from "@/components/Map/providers/MapProvider/context";
 import React from "react";
 
 export const MapGrid: React.FC = () => {
-  const { gridSize } = useMap();
+  const { gridSize: _gridSize } = useMap();
   const editor = useMapEditor();
+
+  const gridSize = _gridSize * (editor?.zoom || 1);
 
   const width = editor?.areaWidth || 0;
   const height = editor?.areaHeight || 0;
@@ -23,7 +25,7 @@ export const MapGrid: React.FC = () => {
           y1={0}
           x2={x}
           y2={height}
-          stroke="#e9e9e9"
+          stroke="#e8e8e8"
           strokeWidth="1"
         />,
       );
@@ -38,7 +40,7 @@ export const MapGrid: React.FC = () => {
           y1={y}
           x2={width}
           y2={y}
-          stroke="#dedede"
+          stroke="#e8e8e8"
           strokeWidth="1"
         />,
       );

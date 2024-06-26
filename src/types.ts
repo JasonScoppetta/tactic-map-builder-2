@@ -90,6 +90,7 @@ export interface MapEditorMethods {
   isItemSelected: (id: string | undefined) => boolean;
   updateItemPosition: (id: string) => void;
   setMainMouseTool: (tool: MainMouseTool) => void;
+  setZoom: (zoom: number) => void;
 }
 
 export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
@@ -98,6 +99,7 @@ export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
   selection: SelectionTargets;
   events: EventManager;
   selectedMainTool: MainMouseTool;
+  zoom: number;
 }
 
 export type SpotType = "Desk" | "Empty" | "Spot";

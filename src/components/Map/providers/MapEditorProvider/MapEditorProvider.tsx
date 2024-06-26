@@ -33,6 +33,7 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
 
   const [selection, setSelection] = React.useState<SelectionTargets>({});
 
+  const [zoom, setZoom] = React.useState(1);
   const [mapState, setMapState] = React.useState(props.value);
   const [draggingGroup, setDraggingGroup] = React.useState<null | string>(null);
   const [draggingGuides, setDraggingGuides] = React.useState<DraggingGuides>({
@@ -231,7 +232,8 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     const { appendSelection = false, removeSelection = false } = options || {};
     if (removeSelection) {
       setSelection((prev) => {
-        const { [id]: _, ...rest } = prev;
+        const rest = { ...prev };
+        delete rest[id];
         _updateSelectionPositions(rest);
         return rest;
       });
@@ -557,6 +559,7 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         selection,
         events,
         selectedMainTool,
+        zoom,
 
         // Methods
         moveItem,
@@ -575,6 +578,7 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         isItemSelected,
         updateItemPosition,
         setMainMouseTool: setSelectedMainTool,
+        setZoom,
       }}
     >
       <MapEditorSelectionTools />

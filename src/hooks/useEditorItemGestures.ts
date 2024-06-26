@@ -50,9 +50,13 @@ export const useEditorItemGestures = (item: EditorItemObject) => {
 
       // Calculate snapped positions based on grid size
       const snappedX =
-        Math.round(/*startPosition.current.x*/ (0 + mx) / gridSize) * gridSize;
+        Math.round(
+          /*startPosition.current.x*/ (0 + mx / (editor?.zoom || 1)) / gridSize,
+        ) * gridSize;
       const snappedY =
-        Math.round(/*startPosition.current.y*/ (0 + my) / gridSize) * gridSize;
+        Math.round(
+          /*startPosition.current.y*/ (0 + my / (editor?.zoom || 1)) / gridSize,
+        ) * gridSize;
 
       editor?.moveItem(
         item.id,
