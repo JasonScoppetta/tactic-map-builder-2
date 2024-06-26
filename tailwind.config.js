@@ -149,7 +149,7 @@ export default {
       drawer: "1400",
       modal: "1500",
       dropdown: "1501",
-      popover: "1600",
+      popover: "600",
       toast: "1700",
       tooltip: "1800",
     },

@@ -5,7 +5,10 @@ import { getUuid } from "@/helpers/getUuid";
 import {
   AddRowOptions,
   AddSpotOptions,
+  DeleteGroupOptions,
   DeleteRwOptions,
+  DeleteSpotOptions,
+  DeleteTextOptions,
   DraggingGuides,
   GetSpotReturn,
   ItemPosition,
@@ -114,55 +117,23 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     type: SelectionTargetType,
     position: ItemPosition,
   ) => {
-    setMapState((prev) => {
-      if (!prev) return undefined;
-      if (type === "group")
-        return {
-          ...prev,
-          groups: prev.groups.map((g) => {
-            if (g.id === id) {
-              return {
-                ...g,
-                x: position.x,
-                y: position.y,
-              };
-            }
-            return g;
-          }),
-        };
+    if (type === "group")
+      return updateGroup(id, {
+        x: position.x,
+        y: position.y,
+      });
 
-      if (type === "text")
-        return {
-          ...prev,
-          texts: prev.texts.map((t) => {
-            if (t.id === id) {
-              return {
-                ...t,
-                x: position.x,
-                y: position.y,
-              };
-            }
-            return t;
-          }),
-        };
+    if (type === "text")
+      return updateText(id, {
+        x: position.x,
+        y: position.y,
+      });
 
-      if (type === "icon")
-        return {
-          ...prev,
-          icons: prev.icons.map((i) => {
-            if (i.id === id) {
-              return {
-                ...i,
-                x: position.x,
-                y: position.y,
-              };
-            }
-            return i;
-          }),
-        };
-
-      return prev;
-    });
+    if (type === "icon")
+      return updateIcon(id, {
+        x: position.x,
+        y: position.y,
+      });
   };
 
   const moveItem = (
@@ -416,6 +387,46 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
       },
       false,
     );
+  };
+
+  const updateRow = (rowId: string, row: Partial<SpotRow>) => {
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      let updatedRow: SpotRow | undefined;
+      const newState = {
+        ...prev,
+        groups: prev.groups.map((group) => {
+          return {
+            ...group,
+            rows: group.rows.map((r) => {
+              if (r.id === rowId) {
+                const _row = {
+                  ...r,
+                  ...row,
+                };
+
+                updatedRow = _row;
+
+                return _row;
+              }
+              return r;
+            }),
+          };
+        }),
+      };
+
+      events.dispatchEvent(
+        {
+          event: "update",
+          targetType: "row",
+          id: rowId,
+          row: updatedRow,
+        },
+        false,
+      );
+
+      return newState;
+    });
   };
 
   const updateSpot = (spotId: string, spot: Partial<SpotItem>) => {
@@ -687,6 +698,117 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     );
   };
 
+  const deleteSpot = (options: DeleteSpotOptions) => {
+    const { groupId, rowId, spotId } = options;
+    let updatedGroup: SpotGroup | undefined;
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        groups: prev.groups.map((group) => {
+          if (group.id === groupId) {
+            const _group = {
+              ...group,
+              rows: group.rows.map((row) => {
+                if (row.id === rowId) {
+                  return {
+                    ...row,
+                    items: row.items.filter((item) => item.id !== spotId),
+                  };
+                }
+                return row;
+              }),
+            };
+
+            updatedGroup = _group;
+
+            return _group;
+          }
+          return group;
+        }),
+      };
+    });
+
+    events.dispatchEvent(
+      {
+        event: "delete",
+        targetType: "spot",
+        id: spotId,
+      },
+      false,
+    );
+
+    events.dispatchEvent(
+      {
+        event: "update",
+        targetType: "group",
+        id: groupId,
+        group: updatedGroup,
+      },
+      false,
+    );
+  };
+
+  const deleteGroup = (options: DeleteGroupOptions) => {
+    const { groupId } = options;
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        groups: prev.groups.filter((group) => group.id !== groupId),
+      };
+    });
+
+    events.dispatchEvent(
+      {
+        event: "delete",
+        targetType: "group",
+        id: groupId,
+      },
+      false,
+    );
+  };
+
+  const deleteText = (options: DeleteTextOptions) => {
+    const { id } = options;
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        texts: prev.texts.filter((text) => text.id !== id),
+      };
+    });
+
+    events.dispatchEvent(
+      {
+        event: "delete",
+        targetType: "text",
+        id,
+      },
+      false,
+    );
+  };
+
+  const deleteIcon = (options: DeleteTextOptions) => {
+    const { id } = options;
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        icons: prev.icons.filter((icon) => icon.id !== id),
+      };
+    });
+
+    events.dispatchEvent(
+      {
+        event: "delete",
+        targetType: "icon",
+        id,
+      },
+      false,
+    );
+  };
+
   const isItemSelected = (id: string | undefined) => {
     if (!id) return false;
     return !!selection[id];
@@ -724,14 +846,19 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         updateGroup,
         updateSpot,
         updateText,
+        updateRow,
         updateIcon,
-        deleteRow,
         getSpot,
         getItem,
         isItemSelected,
         updateItemPosition,
         setMainMouseTool: setSelectedMainTool,
         setZoom,
+        deleteSpot,
+        deleteRow,
+        deleteGroup,
+        deleteText,
+        deleteIcon,
       }}
     >
       <MapEditorSelectionTools />

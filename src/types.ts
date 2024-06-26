@@ -66,6 +66,24 @@ export interface DeleteRwOptions {
   fixRowsOrientation?: boolean;
 }
 
+export interface DeleteSpotOptions {
+  groupId: string;
+  rowId: string;
+  spotId: string;
+}
+
+export interface DeleteTextOptions {
+  id: string;
+}
+
+export interface DeleteIconOptions {
+  id: string;
+}
+
+export interface DeleteGroupOptions {
+  groupId: string;
+}
+
 export interface UpdateSelectionOptions {
   appendSelection?: boolean;
   removeSelection?: boolean;
@@ -89,12 +107,17 @@ export interface MapEditorMethods {
   addSpot: (options: AddSpotOptions) => SpotItem;
   addRow: (options: AddRowOptions) => SpotRow | undefined;
   updateGroup: (groupId: string, group: Partial<SpotGroup>) => void;
+  updateRow: (rowId: string, row: Partial<SpotRow>) => void;
   updateSpot: (spotId: string, spot: Partial<SpotItem>) => void;
   updateText: (textId: string, text: Partial<MapText>) => void;
   updateIcon: (iconId: string, icon: Partial<MapIcon>) => void;
   getSpot: (spotId: string) => GetSpotReturn | undefined;
   getItem: (id: string) => SelectionTarget | undefined;
   deleteRow: (options: DeleteRwOptions) => void;
+  deleteSpot: (options: DeleteSpotOptions) => void;
+  deleteGroup: (options: DeleteGroupOptions) => void;
+  deleteText: (options: DeleteTextOptions) => void;
+  deleteIcon: (options: DeleteIconOptions) => void;
   updateItem: (
     id: string,
     type: SelectionTargetType,
@@ -160,6 +183,9 @@ export interface SpotGroup {
   color?: string;
   textColor?: string;
   type?: string;
+  gap?: number;
+  spotGapX?: number;
+  spotGapY?: number;
 }
 
 export interface MapText {

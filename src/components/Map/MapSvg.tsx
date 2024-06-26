@@ -55,19 +55,40 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
             {map.icons.map((icon) => (
               <MapIcon icon={icon} key={icon.id} />
             ))}
-            {map.groups.map((group, groupIndex) => (
-              <SpotGroup key={groupIndex} group={group}>
-                {group.rows.map((row, rowIndex) => (
-                  <SpotGroupLine
-                    group={group}
-                    orientation={group.orientation}
-                    key={rowIndex}
-                    row={row}
-                    rowIndex={rowIndex}
-                  />
-                ))}
-              </SpotGroup>
-            ))}
+            {map.groups.map((group, groupIndex) => {
+              let gapX = 0;
+              let gapY = 0;
+
+              return (
+                <SpotGroup key={groupIndex} group={group}>
+                  {group.rows.map((row, rowIndex) => {
+                    if (group.gap) {
+                      if (rowIndex && rowIndex % 2 === 0) {
+                        if (group.orientation === "horizontal") {
+                          gapY += group.gap;
+                        } else {
+                          gapX += group.gap;
+                        }
+                      }
+                    }
+
+                    return (
+                      <SpotGroupLine
+                        group={group}
+                        orientation={group.orientation}
+                        paddingX={gapX}
+                        paddingY={gapY}
+                        key={rowIndex}
+                        row={row}
+                        rowIndex={rowIndex}
+                        spotGapX={group.spotGapX}
+                        spotGapY={group.spotGapY}
+                      />
+                    );
+                  })}
+                </SpotGroup>
+              );
+            })}
           </g>
         </g>
       </svg>

@@ -1,4 +1,5 @@
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
+import { Button } from "@/components/primitives/Button";
 import { cn } from "@/helpers/cn";
 import { SelectionTargetType } from "@/types";
 import { useGesture } from "@use-gesture/react";
@@ -37,7 +38,7 @@ export const LayerItem: React.FC<LayerItemProps> = (props) => {
   return (
     <div
       className={cn(
-        "border-b border-input select-none flex gap-2 items-center py-1",
+        "group border-b border-input select-none flex gap-2 items-center py-1",
         editor?.isItemSelected(selectionId) &&
           "bg-primary text-primary-foreground",
       )}
@@ -46,6 +47,15 @@ export const LayerItem: React.FC<LayerItemProps> = (props) => {
     >
       {preview}
       <div className={"w-full flex gap-2 items-center"}>{children}</div>
+      <div>
+        <div className={"hidden group-hover:block"}>
+          <Button
+            variant={"ghost"}
+            icon={"EllipsisVertical"}
+            className={"h-full rounded-none px-2"}
+          />
+        </div>
+      </div>
     </div>
   );
 };

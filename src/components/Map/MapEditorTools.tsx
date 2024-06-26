@@ -2,6 +2,8 @@ import { IconFromSet } from "@/components/IconFromSet";
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import { ColorPicker } from "@/components/Map/toolbar-controls/ColorPicker";
 import { FontSize } from "@/components/Map/toolbar-controls/FontSize";
+import { GapSelect } from "@/components/Map/toolbar-controls/GapSelect";
+import { GenerateLabel } from "@/components/Map/toolbar-controls/GenerateLabel";
 import { IconPicker } from "@/components/Map/toolbar-controls/IconPicker";
 import { SpotType } from "@/components/Map/toolbar-controls/SpotType";
 import {
@@ -35,11 +37,23 @@ type Tool =
   | "fontFamily"
   | "icon"
   | "text"
-  | "type";
+  | "type"
+  | "gap"
+  | "spotGapX"
+  | "spotGapY"
+  | "generateLabel";
 
 const toolsForType: Record<SelectionTargetType, Tool[]> = {
   spot: ["color", "textColor"],
-  group: ["color", "textColor", "type"],
+  group: [
+    "color",
+    "textColor",
+    "type",
+    "gap",
+    "spotGapX",
+    "spotGapY",
+    "generateLabel",
+  ],
   text: ["textColor", "fontSize", "fontFamily"],
   icon: ["color", "icon", "fontSize"],
 };
@@ -70,6 +84,22 @@ const ToolsToComponents: Record<
   type: {
     icon: { set: "lucide", icon: "Armchair" },
     component: SpotType,
+  },
+  gap: {
+    icon: { set: "lucide", icon: "UnfoldVertical" },
+    component: GapSelect,
+  },
+  spotGapX: {
+    icon: { set: "lucide", icon: "MoveRight" },
+    component: GapSelect,
+  },
+  spotGapY: {
+    icon: { set: "lucide", icon: "MoveDown" },
+    component: GapSelect,
+  },
+  generateLabel: {
+    icon: { set: "lucide", icon: "Text" },
+    component: GenerateLabel,
   },
 };
 

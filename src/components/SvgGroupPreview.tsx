@@ -8,6 +8,7 @@ export interface SvgGroupPreviewProps {
   height?: number;
   targetId: string;
   targetType: SelectionTargetType;
+  groupId?: string;
 }
 
 export const SvgGroupPreview: React.FC<SvgGroupPreviewProps> = ({
@@ -15,6 +16,7 @@ export const SvgGroupPreview: React.FC<SvgGroupPreviewProps> = ({
   height = 32,
   targetType,
   targetId,
+  groupId,
 }) => {
   const editor = useMapEditor();
   const layerPreviewGroupRef = React.useRef<SVGSVGElement>(null);
@@ -49,18 +51,35 @@ export const SvgGroupPreview: React.FC<SvgGroupPreviewProps> = ({
   React.useEffect(() => {
     updateLayerPreview();
 
-    const onSpotUpdated = (event: MapEditorEventData) => {
+    const onItemUpdated = (event: MapEditorEventData) => {
       if (event.targetType === targetType && event.id === targetId) {
         updateLayerPreview();
       }
     };
 
-    editor?.events?.addListener(targetId, "update", onSpotUpdated);
-
-    return () => {
-      editor?.events?.removeListener(targetId, "update", onSpotUpdated);
+    const onGroupUpdated = (event: MapEditorEventData) => {
+      if (event.targetType === "group" && event.id === groupId) {
+        updateLayerPreview();
+      }
     };
-  }, [targetId, targetElement, layerPreviewGroupRef.current, targetType]);
+
+    editor?.events?.addListener(targetId, "update", onItemUpdated);
+    if (groupId) {
+      editor?.events?.addListener(groupId, "update", onGroupUpdated);
+    }
+    return () => {
+      editor?.events?.removeListener(targetId, "update", onItemUpdated);
+      if (groupId) {
+        editor?.events?.removeListener(groupId, "update", onGroupUpdated);
+      }
+    };
+  }, [
+    targetId,
+    targetElement,
+    layerPreviewGroupRef.current,
+    targetType,
+    groupId,
+  ]);
 
   return (
     <div

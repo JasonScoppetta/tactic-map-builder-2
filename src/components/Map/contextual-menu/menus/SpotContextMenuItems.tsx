@@ -1,6 +1,7 @@
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import {
   ContextMenuCheckboxItem,
+  ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuSub,
   ContextMenuSubContent,
@@ -27,6 +28,48 @@ export const SpotContextMenuItems: React.FC<SpotContextMenuItemsProps> = ({
 
   const handleSetOrientation = (orientation: Orientation | undefined) => {
     editor?.updateSpot(id, { orientation });
+  };
+
+  const handleDeleteSpot = () => {
+    if (!spot) return;
+    editor?.deleteSpot({
+      spotId: spot.spot.id,
+      groupId: spot.group.id,
+      rowId: spot.row.id,
+    });
+  };
+
+  const handleDeleteRow = () => {
+    if (!spot) return;
+    editor?.deleteRow({
+      rowId: spot.row.id,
+      groupId: spot.group.id,
+    });
+  };
+
+  const handleDeleteGroup = () => {
+    if (!spot) return;
+    editor?.deleteGroup({
+      groupId: spot.group.id,
+    });
+  };
+
+  const handleDuplicateLine = () => {
+    if (!spot) return;
+    const row = editor?.getItem(spot.row.id);
+    if (!row) return;
+    if (!("items" in row)) return;
+
+    const newRow = editor?.addRow({
+      groupId: spot.group.id,
+    });
+
+    if (!newRow) return;
+    editor?.updateRow(newRow.id, {
+      ...newRow,
+      ...row,
+      id: newRow.id,
+    });
   };
 
   React.useEffect(() => {
@@ -106,6 +149,16 @@ export const SpotContextMenuItems: React.FC<SpotContextMenuItemsProps> = ({
           </ContextMenuCheckboxItem>
         </ContextMenuSubContent>
       </ContextMenuSub>
+      <ContextMenuSeparator />
+      <ContextMenuItem onClick={handleDuplicateLine}>
+        Duplicate line
+      </ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem onClick={handleDeleteSpot}>Delete spot</ContextMenuItem>
+      <ContextMenuItem onClick={handleDeleteRow}>Delete row</ContextMenuItem>
+      <ContextMenuItem onClick={handleDeleteGroup}>
+        Delete group
+      </ContextMenuItem>
     </>
   );
 };

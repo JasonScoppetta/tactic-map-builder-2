@@ -2,17 +2,19 @@ import { EditableLabel } from "@/components/EditableLabel";
 import { LayerItem } from "@/components/Layers/LayerItem";
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import { SvgGroupPreview } from "@/components/SvgGroupPreview";
-import { SpotItem } from "@/types";
+import { SpotGroup, SpotItem } from "@/types";
 import React from "react";
 
 export interface LayerSpotItemProps extends React.PropsWithChildren {
   spot: SpotItem;
+  group: SpotGroup;
   indentation?: number;
 }
 
 export const LayerSpotItem: React.FC<LayerSpotItemProps> = ({
   spot,
   indentation = 0,
+  group,
 }) => {
   const editor = useMapEditor();
 
@@ -22,7 +24,13 @@ export const LayerSpotItem: React.FC<LayerSpotItemProps> = ({
 
   return (
     <LayerItem
-      preview={<SvgGroupPreview targetType={"spot"} targetId={spot.id} />}
+      preview={
+        <SvgGroupPreview
+          targetType={"spot"}
+          targetId={spot.id}
+          groupId={group.id}
+        />
+      }
       indentation={indentation}
       selectionId={spot.id}
       selectionType={"spot"}

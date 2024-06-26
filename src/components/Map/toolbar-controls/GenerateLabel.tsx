@@ -4,14 +4,19 @@ import { HookFormSelectInput } from "@/components/controls/SelectInput";
 import { HookFormTextInput } from "@/components/controls/TextInput";
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import { Button } from "@/components/primitives/Button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/primitives/popover";
 import { SelectItem } from "@/components/primitives/select";
 import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/primitives/toggle-group";
 import { getObjectKeys } from "@/helpers/getObjectKeys";
+import { ToolBarControlFC } from "@/types";
 import React from "react";
-import { createPortal } from "react-dom";
 import { useFieldArray, useForm } from "react-hook-form";
 
 interface PatternItem {
@@ -98,7 +103,7 @@ function generateLabels(options: GenerateLabelsOptions): string[] {
   return result.slice(0, amount);
 }
 
-export const AssignDeskNamesForm: React.FC = () => {
+export const GenerateLabel: ToolBarControlFC = () => {
   const editor = useMapEditor();
   const form = useForm<GenerateLabelFormData>({
     defaultValues: {
@@ -181,153 +186,158 @@ export const AssignDeskNamesForm: React.FC = () => {
     }
 
     /*if (data.direction === "top-bottom") {
-      const maxItemsPerRow = group.rows.reduce(
-        (max, row) => Math.max(max, row.items.length),
-        0,
-      );
-      console.log(currentColumn, maxItemsPerRow);
-      for (let i = 0; i < maxItemsPerRow; i++) {
-        group.rows.forEach((row) => {
-          const item = row.items[i];
-          if (!item) return;
-          const label = labels.shift();
-          if (!label) return;
-          editor?.updateSpot(item.id, { label: label || "" });
-        });
-      }
-    }*/
+              const maxItemsPerRow = group.rows.reduce(
+                (max, row) => Math.max(max, row.items.length),
+                0,
+              );
+              console.log(currentColumn, maxItemsPerRow);
+              for (let i = 0; i < maxItemsPerRow; i++) {
+                group.rows.forEach((row) => {
+                  const item = row.items[i];
+                  if (!item) return;
+                  const label = labels.shift();
+                  if (!label) return;
+                  editor?.updateSpot(item.id, { label: label || "" });
+                });
+              }
+            }*/
   });
 
   const direction = form.watch("direction");
 
-  if (true) return null;
-
-  return createPortal(
-    <div
-      className={
-        "fixed left-20 top-20 bg-primary-background rounded-md shadow-lg border z-docked p-10"
-      }
-    >
-      <div>
-        <div className={"flex"}>
-          <FormControlWrapper variant={"unstyled"} label={"Direction"}>
-            <div>
-              <ToggleGroup
-                type={"single"}
-                value={direction}
-                onValueChange={(value) => {
-                  if (direction === value) return;
-                  form.setValue("direction", value as never);
-                }}
-              >
-                <ToggleGroupItem
-                  icon={{ set: "lucide", icon: "MoveRight" }}
-                  value={"right"}
-                >
-                  To right
-                </ToggleGroupItem>
-                <ToggleGroupItem
-                  icon={{ set: "lucide", icon: "MoveLeft" }}
-                  value={"left"}
-                >
-                  To left
-                </ToggleGroupItem>
-                <ToggleGroupItem
-                  icon={{ set: "lucide", icon: "MoveUp" }}
-                  value={"top"}
-                >
-                  To top
-                </ToggleGroupItem>
-                <ToggleGroupItem
-                  icon={{ set: "lucide", icon: "MoveDown" }}
-                  value={"bottom"}
-                >
-                  To bottom
-                </ToggleGroupItem>
-                <ToggleGroupItem
-                  icon={{ set: "lucide", icon: "ArrowDownUp" }}
-                  value={"top-bottom"}
-                >
-                  Top to bottom
-                </ToggleGroupItem>
-              </ToggleGroup>
-            </div>
-          </FormControlWrapper>
-        </div>
-        {patternArray.fields.map((field, index) => {
-          const type = form.watch(`pattern.${index}.type`);
-          return (
-            <div key={field.id} className={"flex gap-4 items-center"}>
-              <div className={"flex-shrink-0"}>
-                <HookFormSelectInput
-                  className={"w-36"}
-                  form={form}
-                  name={`pattern.${index}.type`}
-                  label={"Type"}
-                >
-                  <SelectItem value={"text"}>Text</SelectItem>
-                  <SelectItem value={"numbers"}>Numbers</SelectItem>
-                  <SelectItem value={"letters"}>Letters</SelectItem>
-                </HookFormSelectInput>
-              </div>
-              {type === "text" && (
-                <HookFormTextInput
-                  label={"Free text"}
-                  form={form}
-                  name={`pattern.${index}.value`}
-                  placeholder={"Free text"}
-                />
-              )}
-              {type === "numbers" && (
-                <HookFormNumberInput
-                  label={"Max number"}
-                  form={form}
-                  name={`pattern.${index}.depth`}
-                  min={0}
-                />
-              )}
-              {type === "letters" && (
-                <HookFormNumberInput
-                  label={"Max letters"}
-                  form={form}
-                  name={`pattern.${index}.depth`}
-                  min={0}
-                  max={26}
-                />
-              )}
-              <Button
-                variant={"outline"}
-                icon={"Minus"}
-                onClick={() => {
-                  patternArray.remove(index);
-                }}
-              />
-              <Button
-                variant={"outline"}
-                icon={"Plus"}
-                onClick={() => {
-                  patternArray.insert(index + 1, {
-                    type: "text",
-                    value: "",
-                    depth: 0,
-                  });
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
-      <div className={"flex justify-end"}>
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
-          icon={"Plus"}
-          onClick={() => {
-            patternArray.append({ type: "text", value: "", depth: 0 });
-          }}
-        />
-      </div>
-      <Button onClick={handleSubmt}>Assign</Button>
-    </div>,
-    window.document.body,
+          variant={"ghost"}
+          className={"border border-input transition-none"}
+        >
+          Labels
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className={"w-auto"}>
+        <div>
+          <div>
+            <div className={"flex"}>
+              <FormControlWrapper variant={"unstyled"} label={"Direction"}>
+                <div>
+                  <ToggleGroup
+                    type={"single"}
+                    value={direction}
+                    onValueChange={(value) => {
+                      if (direction === value) return;
+                      form.setValue("direction", value as never);
+                    }}
+                  >
+                    <ToggleGroupItem
+                      icon={{ set: "lucide", icon: "MoveRight" }}
+                      value={"right"}
+                    >
+                      To right
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      icon={{ set: "lucide", icon: "MoveLeft" }}
+                      value={"left"}
+                    >
+                      To left
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      icon={{ set: "lucide", icon: "MoveUp" }}
+                      value={"top"}
+                    >
+                      To top
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      icon={{ set: "lucide", icon: "MoveDown" }}
+                      value={"bottom"}
+                    >
+                      To bottom
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      icon={{ set: "lucide", icon: "ArrowDownUp" }}
+                      value={"top-bottom"}
+                    >
+                      Top to bottom
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                </div>
+              </FormControlWrapper>
+            </div>
+            {patternArray.fields.map((field, index) => {
+              const type = form.watch(`pattern.${index}.type`);
+              return (
+                <div key={field.id} className={"flex gap-4 items-center"}>
+                  <div className={"flex-shrink-0"}>
+                    <HookFormSelectInput
+                      className={"w-36"}
+                      form={form}
+                      name={`pattern.${index}.type`}
+                      label={"Type"}
+                    >
+                      <SelectItem value={"text"}>Text</SelectItem>
+                      <SelectItem value={"numbers"}>Numbers</SelectItem>
+                      <SelectItem value={"letters"}>Letters</SelectItem>
+                    </HookFormSelectInput>
+                  </div>
+                  {type === "text" && (
+                    <HookFormTextInput
+                      label={"Free text"}
+                      form={form}
+                      name={`pattern.${index}.value`}
+                      placeholder={"Free text"}
+                    />
+                  )}
+                  {type === "numbers" && (
+                    <HookFormNumberInput
+                      label={"Max number"}
+                      form={form}
+                      name={`pattern.${index}.depth`}
+                      min={0}
+                    />
+                  )}
+                  {type === "letters" && (
+                    <HookFormNumberInput
+                      label={"Max letters"}
+                      form={form}
+                      name={`pattern.${index}.depth`}
+                      min={0}
+                      max={26}
+                    />
+                  )}
+                  <Button
+                    variant={"outline"}
+                    icon={"Minus"}
+                    onClick={() => {
+                      patternArray.remove(index);
+                    }}
+                  />
+                  <Button
+                    variant={"outline"}
+                    icon={"Plus"}
+                    onClick={() => {
+                      patternArray.insert(index + 1, {
+                        type: "text",
+                        value: "",
+                        depth: 0,
+                      });
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <div className={"flex justify-end"}>
+            <Button
+              variant={"outline"}
+              icon={"Plus"}
+              onClick={() => {
+                patternArray.append({ type: "text", value: "", depth: 0 });
+              }}
+            />
+          </div>
+          <Button onClick={handleSubmt}>Assign</Button>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };

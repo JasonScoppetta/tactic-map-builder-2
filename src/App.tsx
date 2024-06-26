@@ -208,6 +208,9 @@ const spotGroups: ISpotGroup[] = [
     y: 100,
     color: "#A9C19A",
     label: "Group 4",
+    gap: 20,
+    spotGapY: 2,
+    spotGapX: 2,
     orientation: "horizontal",
     rows: [
       {

@@ -62,7 +62,12 @@ export const Layers: React.FC = () => {
                 onDelete={() => handleDeleteRow(group.id, row.id)}
               >
                 {row.items.map((item) => (
-                  <LayerSpotItem indentation={2} key={item.id} spot={item}>
+                  <LayerSpotItem
+                    indentation={2}
+                    key={item.id}
+                    spot={item}
+                    group={group}
+                  >
                     {item.id}
                   </LayerSpotItem>
                 ))}
