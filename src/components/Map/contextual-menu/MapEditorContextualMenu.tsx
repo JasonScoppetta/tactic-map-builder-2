@@ -1,3 +1,4 @@
+import { GlobalContextMenuItems } from "@/components/Map/contextual-menu/menus/GlobalContextMenuItems";
 import { IconContextMenuItems } from "@/components/Map/contextual-menu/menus/IconContextMenuItems";
 import { SpotContextMenuItems } from "@/components/Map/contextual-menu/menus/SpotContextMenuItems";
 import { TextContextMenuItems } from "@/components/Map/contextual-menu/menus/TextContextMenuItems";
@@ -16,7 +17,7 @@ export const MapEditorContextualMenu: React.FC<PropsWithChildren> = ({
   const editor = useMapEditor();
 
   const [target, setTarget] = React.useState<{
-    target: SelectionTargetType;
+    target: SelectionTargetType | undefined;
     id: string;
   }>();
 
@@ -85,7 +86,14 @@ export const MapEditorContextualMenu: React.FC<PropsWithChildren> = ({
             }
           }
 
-          event.preventDefault();
+          setTarget({
+            target: undefined,
+            id: "",
+          });
+
+          /**/
+
+          //event.preventDefault();
         }}
       >
         <>{children}</>
@@ -94,6 +102,7 @@ export const MapEditorContextualMenu: React.FC<PropsWithChildren> = ({
         {target?.target === "spot" && <SpotContextMenuItems id={target.id} />}
         {target?.target === "text" && <TextContextMenuItems id={target.id} />}
         {target?.target === "icon" && <IconContextMenuItems id={target.id} />}
+        {!target?.target && <GlobalContextMenuItems />}
       </ContextMenuContent>
     </ContextMenu>
   );

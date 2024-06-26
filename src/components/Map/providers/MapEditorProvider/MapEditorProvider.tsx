@@ -3,8 +3,11 @@ import { EventManager } from "@/helpers/event-manager";
 import { getObjectKeys } from "@/helpers/getObjectKeys";
 import { getUuid } from "@/helpers/getUuid";
 import {
+  AddGroupOptions,
+  AddIconOptions,
   AddRowOptions,
   AddSpotOptions,
+  AddTextOptions,
   DeleteGroupOptions,
   DeleteRwOptions,
   DeleteSpotOptions,
@@ -814,6 +817,98 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     return !!selection[id];
   };
 
+  const addText = (options: AddTextOptions) => {
+    const newText: MapText = {
+      id: getUuid(),
+      ...options,
+    } as MapText;
+
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        texts: prev.texts.concat(newText),
+      };
+    });
+
+    events.dispatchEvent(
+      {
+        event: "add",
+        targetType: "text",
+        id: newText.id,
+        text: newText,
+      },
+      false,
+    );
+
+    return newText;
+  };
+
+  const addIcon = (options: AddIconOptions) => {
+    const newIcon: MapIcon = {
+      id: getUuid(),
+      ...options,
+    } as MapIcon;
+
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        icons: prev.icons.concat(newIcon),
+      };
+    });
+
+    events.dispatchEvent(
+      {
+        event: "add",
+        targetType: "icon",
+        id: newIcon.id,
+        icon: newIcon,
+      },
+      false,
+    );
+
+    return newIcon;
+  };
+
+  const addGroup = (options: AddGroupOptions) => {
+    const newGroup: SpotGroup = {
+      id: getUuid(),
+      rows: [
+        {
+          id: getUuid(),
+          items: [
+            {
+              id: getUuid(),
+            },
+          ],
+          orientation: options.orientation === "horizontal" ? "top" : "left",
+        },
+      ],
+      ...options,
+    } as SpotGroup;
+
+    setMapState((prev) => {
+      if (!prev) return undefined;
+      return {
+        ...prev,
+        groups: prev.groups.concat(newGroup),
+      };
+    });
+
+    events.dispatchEvent(
+      {
+        event: "add",
+        targetType: "group",
+        id: newGroup.id,
+        group: newGroup,
+      },
+      false,
+    );
+
+    return newGroup;
+  };
+
   React.useEffect(() => {
     updateGroupsPositions();
   }, []);
@@ -842,6 +937,9 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         clearSelection,
         addSpot,
         addRow,
+        addText,
+        addIcon,
+        addGroup,
         updateItem,
         updateGroup,
         updateSpot,

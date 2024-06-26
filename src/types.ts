@@ -46,6 +46,24 @@ export interface MapEditorOptions {
   areaHeight: number;
 }
 
+export interface AddTextOptions {
+  x: number;
+  y: number;
+  text: string;
+  fontSize: number;
+  textColor?: string;
+  fontFamily?: string;
+  fontWeight?: string;
+}
+
+export interface AddIconOptions {
+  x: number;
+  y: number;
+  icon: IconValue;
+  color?: string;
+  fontSize?: number;
+}
+
 export interface AddSpotOptions {
   groupId: string;
   rowId?: string;
@@ -58,6 +76,19 @@ export interface AddRowOptions {
   groupId: string;
   afterRowId?: string;
   beforeRowId?: string;
+}
+
+export interface AddGroupOptions {
+  x: number;
+  y: number;
+  orientation: GroupOrientation;
+  rotation?: number;
+  color?: string;
+  textColor?: string;
+  type?: string;
+  gap?: number;
+  spotGapX?: number;
+  spotGapY?: number;
 }
 
 export interface DeleteRwOptions {
@@ -106,6 +137,9 @@ export interface MapEditorMethods {
   clearSelection: () => void;
   addSpot: (options: AddSpotOptions) => SpotItem;
   addRow: (options: AddRowOptions) => SpotRow | undefined;
+  addText: (options: AddTextOptions) => MapText;
+  addIcon: (options: AddIconOptions) => MapIcon;
+  addGroup: (options: AddGroupOptions) => SpotGroup;
   updateGroup: (groupId: string, group: Partial<SpotGroup>) => void;
   updateRow: (rowId: string, row: Partial<SpotRow>) => void;
   updateSpot: (spotId: string, spot: Partial<SpotItem>) => void;
