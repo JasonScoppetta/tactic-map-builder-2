@@ -88,7 +88,6 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
           y: item?.y || 0,
         };
       }
-      console.log(positions);
 
       return positions;
     });

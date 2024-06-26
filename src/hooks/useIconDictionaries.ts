@@ -2,12 +2,12 @@ import { useStandardApiHandler } from "@/hooks/useStandardApiHandler";
 import { IconDictionaries } from "@/types";
 import React from "react";
 
-const StoreIconDictionariesName = "DashboardIconDictionaries";
+const StoreIconDictionariesName = "DashboardIconDictionaries" as const;
 
 export const useIconDictionaries = () => {
   const [iconDictionaries, setIconDictionaries] = React.useState<
     IconDictionaries | undefined
-  >(window[StoreIconDictionariesName]);
+  >(window[StoreIconDictionariesName as never] as never);
 
   const { wrapApiRequest } = useStandardApiHandler();
 
@@ -21,15 +21,17 @@ export const useIconDictionaries = () => {
 
     const dictionaries = (await dictionariesRequest.json()) as IconDictionaries;
 
-    window[StoreIconDictionariesName] = dictionaries;
+    (window[StoreIconDictionariesName as never] as unknown) = dictionaries;
     setIconDictionaries(dictionaries);
   });
+
+  const hasDictionary = iconDictionaries !== undefined;
 
   React.useEffect(() => {
     if (iconDictionaries !== undefined) return;
 
     loadDictionaries().then();
-  }, [iconDictionaries !== undefined]);
+  }, [hasDictionary]);
 
   return iconDictionaries;
 };
