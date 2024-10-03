@@ -6,6 +6,7 @@ import { GapSelect } from "@/components/Map/toolbar-controls/GapSelect";
 import { GenerateLabel } from "@/components/Map/toolbar-controls/GenerateLabel";
 import { IconPicker } from "@/components/Map/toolbar-controls/IconPicker";
 import { SpotType } from "@/components/Map/toolbar-controls/SpotType";
+import { Button } from "@/components/primitives/Button";
 import {
   Select,
   SelectContent,
@@ -27,6 +28,7 @@ import {
   SelectionTarget,
   SelectionTargetType,
   ToolBarControlFC,
+  ViewMode,
 } from "@/types";
 import React from "react";
 
@@ -192,6 +194,24 @@ export const MapEditorTools: React.FC = () => {
         <div>
           <ToggleGroup
             type={"single"}
+            value={editor?.viewMode}
+            onValueChange={(value) =>
+              !!value && editor?.setViewMode(value as ViewMode)
+            }
+          >
+            <ToggleGroupItem
+              value={"resources"}
+              icon={{ set: "lucide", icon: "Box" }}
+            />
+            <ToggleGroupItem
+              value={"floor"}
+              icon={{ set: "lucide", icon: "Brush" }}
+            />
+          </ToggleGroup>
+        </div>
+        <div>
+          <ToggleGroup
+            type={"single"}
             value={editor?.selectedMainTool}
             onValueChange={(value) =>
               !!value && editor?.setMainMouseTool(value as MainMouseTool)
@@ -240,7 +260,9 @@ export const MapEditorTools: React.FC = () => {
         })}
       </div>
       <div></div>
-      <div>C</div>
+      <div>
+        <Button icon={"EllipsisVertical"} variant={"ghost"}></Button>
+      </div>
     </div>
   );
 };

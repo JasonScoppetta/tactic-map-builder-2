@@ -209,6 +209,10 @@ export const useMapEditorMapTools = (options: UseMapEditorMapToolsOptions) => {
 
   React.useEffect(() => {
     const windowKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Backspace") {
+        console.log("HERE");
+        return;
+      }
       if (event.metaKey && editor?.selectedMainTool === "select") {
         mainSvgRef.current?.style.setProperty("cursor", "move");
       }

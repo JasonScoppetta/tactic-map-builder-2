@@ -42,8 +42,6 @@ export interface MapEditorOptions {
   isEditing?: boolean;
   showGrid?: boolean;
   value?: MapValue;
-  areaWidth: number;
-  areaHeight: number;
 }
 
 export interface AddTextOptions {
@@ -161,7 +159,9 @@ export interface MapEditorMethods {
   isItemSelected: (id: string | undefined) => boolean;
   updateItemPosition: (id: string) => void;
   setMainMouseTool: (tool: MainMouseTool) => void;
+  setViewMode: (mode: ViewMode) => void;
   setZoom: (zoom: number) => void;
+  setAreaSize: (width: number, height: number) => void;
 }
 
 export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
@@ -171,6 +171,8 @@ export interface MapEditorState extends MapEditorOptions, MapEditorMethods {
   events: EventManager;
   selectedMainTool: MainMouseTool;
   zoom: number;
+  viewMode: ViewMode;
+  areaSize: { width: number; height: number };
 }
 
 export type SpotType = "Desk" | "Empty" | "Spot";
@@ -277,3 +279,4 @@ export type SelectionTarget =
   | SpotRow;
 
 export type MainMouseTool = "select" | "moveMap";
+export type ViewMode = "resources" | "floor";

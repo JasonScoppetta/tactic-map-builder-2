@@ -27,6 +27,10 @@ export const Layers: React.FC = () => {
     editor?.deleteRow({ groupId, rowId });
   };
 
+  const handleDeleteGroup = (groupId: string) => {
+    editor?.deleteGroup({ groupId });
+  };
+
   return (
     <div className={"flex flex-col"}>
       <LayerGroup title={"Text"} isRoot>
@@ -52,6 +56,7 @@ export const Layers: React.FC = () => {
             selectionType={"group"}
             selectionId={group.id}
             onAdd={() => handleAddRowToGroup(group.id)}
+            onDelete={() => handleDeleteGroup(group.id)}
           >
             {group.rows.map((row, rowIndex) => (
               <LayerGroup

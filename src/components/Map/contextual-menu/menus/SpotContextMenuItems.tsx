@@ -9,6 +9,7 @@ import {
 } from "@/components/primitives/context-menu";
 import { MapEditorEventData } from "@/helpers/event-manager";
 import { getEnumKeys } from "@/helpers/getObjectKeys";
+import { getUuid } from "@/helpers/getUuid";
 import { GetSpotReturn, Orientation, SpotType, SpotTypes } from "@/types";
 import React from "react";
 
@@ -68,6 +69,10 @@ export const SpotContextMenuItems: React.FC<SpotContextMenuItemsProps> = ({
     editor?.updateRow(newRow.id, {
       ...newRow,
       ...row,
+      items: row.items.map((item) => ({
+        ...item,
+        id: getUuid(),
+      })),
       id: newRow.id,
     });
   };

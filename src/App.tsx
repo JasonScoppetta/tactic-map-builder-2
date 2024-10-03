@@ -1,16 +1,10 @@
-import { AssignDeskNamesForm } from "@/components/editor/AssignDeskNamesForm";
-import { Layers } from "@/components/Layers/Layers";
-import { MapEditorContextualMenu } from "@/components/Map/contextual-menu/MapEditorContextualMenu";
-import { MapEditorTools } from "@/components/Map/MapEditorTools";
+import { EditorViews } from "@/components/EditorViews";
 import { MapEditorProvider } from "@/components/Map/providers/MapEditorProvider/MapEditorProvider";
-import { cn } from "@/helpers/cn";
-import React from "react";
-import { Map } from "./components/Map/Map";
 import { MapIcon, MapText, SpotGroup as ISpotGroup } from "./types";
 import "./App.css";
 
 const spotGroups: ISpotGroup[] = [
-  {
+  /*  {
     id: "4e915277-8928-4c47-baaa-b6cfafb89287",
     x: 100,
     y: 100,
@@ -310,10 +304,10 @@ const spotGroups: ISpotGroup[] = [
         ],
       },
     ],
-  },
+  },*/
 ];
 const texts: MapText[] = [
-  {
+  /*  {
     id: "4e9a0b66-071c-4eaf-8170-143aaccd386e",
     x: 100,
     y: 100,
@@ -345,38 +339,12 @@ const texts: MapText[] = [
     textColor: "#80C7DF",
     fontSize: 24,
     fontWeight: "bold",
-  },
+  },*/
 ];
 
-const icons: MapIcon[] = [
-  {
-    id: "b918fc1e-1f71-4073-8cd8-09bb3110473c",
-    x: 20,
-    y: 20,
-    icon: { set: "lucide", icon: "Clock" },
-  },
-];
+const icons: MapIcon[] = [];
 
 function App() {
-  const [containerRef, setContainerRef] =
-    React.useState<HTMLDivElement | null>();
-
-  const [areaSize, setAreaSize] = React.useState({ width: 0, height: 0 });
-
-  React.useEffect(() => {
-    const updateSize = () => {
-      if (!containerRef) return;
-      setAreaSize({
-        width: containerRef.clientWidth,
-        height: containerRef.clientHeight,
-      });
-    };
-
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
-  }, [containerRef]);
-
   return (
     <MapEditorProvider
       value={{
@@ -387,39 +355,10 @@ function App() {
         height: 1138,
         gridSize: 10,
       }}
-      areaHeight={areaSize.height}
-      areaWidth={areaSize.width}
       showGrid
       isEditing
     >
-      <div
-        className={cn(
-          "grid h-screen grid-rows-[60px,1fr] grid-cols-[360px,1fr]",
-        )}
-      >
-        <div
-          className={"flex w-full border-b border-input shadow-md relative"}
-          style={{ gridRow: "1 / 2", gridColumn: "1 / -1" }}
-        >
-          <MapEditorTools />
-        </div>
-        <div
-          className={"bg-muted overflow-auto"}
-          style={{ gridRow: "2 / -1", gridColumn: "1 / 2" }}
-        >
-          <Layers />
-        </div>
-        <div
-          className={cn("overflow-hidden")}
-          style={{ gridRow: "2 / -1", gridColumn: "2 / -1" }}
-          ref={setContainerRef}
-        >
-          <MapEditorContextualMenu>
-            <Map />
-          </MapEditorContextualMenu>
-        </div>
-      </div>
-      <AssignDeskNamesForm />
+      <EditorViews />
     </MapEditorProvider>
   );
 }

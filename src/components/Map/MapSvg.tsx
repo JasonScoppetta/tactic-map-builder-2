@@ -31,8 +31,8 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
   return (
     <>
       <svg
-        width={editor?.areaWidth || map.width}
-        height={editor?.areaHeight || map.height}
+        width={editor?.areaSize?.width || map.width}
+        height={editor?.areaSize?.height || map.height}
         onMouseDown={handleMapMouseDown}
         onMouseUp={handleMapMouseUp}
         ref={mainSvgRef}
@@ -41,8 +41,8 @@ export const MapSvg = React.forwardRef<SVGSVGElement>(function (_, ref) {
         <MapGrid />
         <g
           xmlns="http://www.w3.org/2000/svg"
-          width={editor?.areaWidth || map.width}
-          height={editor?.areaHeight || map.height}
+          width={editor?.areaSize?.width || map.width}
+          height={editor?.areaSize?.height || map.height}
           style={{ background: "transparent" }}
           ref={mergeRefs([groupRef, ref])}
           transform={groupTransform}

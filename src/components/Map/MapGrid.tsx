@@ -8,8 +8,8 @@ export const MapGrid: React.FC = () => {
 
   const gridSize = _gridSize * (editor?.zoom || 1);
 
-  const width = editor?.areaWidth || 0;
-  const height = editor?.areaHeight || 0;
+  const width = editor?.areaSize?.width || 0;
+  const height = editor?.areaSize?.height || 0;
 
   const gridLines = React.useMemo(() => {
     const lines: React.ReactElement[] = [];

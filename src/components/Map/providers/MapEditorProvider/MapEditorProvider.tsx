@@ -26,6 +26,7 @@ import {
   SpotItem,
   SpotRow,
   UpdateSelectionOptions,
+  ViewMode,
 } from "@/types";
 import React from "react";
 import { MapEditorContext, MapEditorProviderProps } from "./context";
@@ -49,6 +50,9 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     x: [],
     y: [],
   });
+
+  const [viewMode, setViewMode] = React.useState<ViewMode>("floor");
+
   const [dragStartPositions, setDragStartPositions] =
     React.useState<ItemPositions>();
 
@@ -59,6 +63,14 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
   const [groupsInXPosition, setGroupsInXPosition] = React.useState<
     Record<number, number>
   >([]);
+
+  const [areaSize, setAreaSize] = React.useState<{
+    width: number;
+    height: number;
+  }>({
+    width: 0,
+    height: 0,
+  });
 
   const clearGuides = () => {
     setDraggingGuides({ x: [], y: [] });
@@ -928,6 +940,8 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         events,
         selectedMainTool,
         zoom,
+        viewMode,
+        areaSize,
 
         // Methods
         moveItem,
@@ -957,6 +971,10 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
         deleteGroup,
         deleteText,
         deleteIcon,
+        setViewMode,
+        setAreaSize: (width, height) => {
+          setAreaSize({ width, height });
+        },
       }}
     >
       <MapEditorSelectionTools />
