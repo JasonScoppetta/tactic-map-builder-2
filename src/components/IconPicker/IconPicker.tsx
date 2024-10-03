@@ -8,6 +8,7 @@ import React from "react";
 import Scrollbars, { positionValues } from "react-custom-scrollbars";
 import { IconPickerProps } from "./IconPicker.types";
 import { IconPickerContext, IconPickerProvider } from "./IconPicker.provider";
+import { Dict } from "@/components/controls/types";
 
 const classes = {
   IconPickerWrapper: "h-[320px]",
@@ -115,9 +116,11 @@ export const IconPickerInner: React.FC<
                           <div key={iconName}>
                             <IconPickerIconButton
                               iconName={
-                                iconPickerDictionaries[state.iconSet].icons[
-                                  iconName
-                                ]
+                                (
+                                  iconPickerDictionaries[
+                                    state.iconSet as never
+                                  ] as Dict
+                                ).icons[iconName]
                               }
                               onClick={handleIconSelect.bind(
                                 null,

@@ -128,8 +128,6 @@ export const AssignDeskNamesForm: React.FC = () => {
 
     const labels = generateLabels({ pattern: data.pattern, amount: 100 });
 
-    let count = 0;
-
     if (data.direction === "right")
       group.rows.forEach((row) => {
         row.items.forEach((item) => {

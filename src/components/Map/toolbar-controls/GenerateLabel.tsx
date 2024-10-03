@@ -16,7 +16,6 @@ import {
 } from "@/components/primitives/toggle-group";
 import { getObjectKeys } from "@/helpers/getObjectKeys";
 import { ToolBarControlFC } from "@/types";
-import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 interface PatternItem {
@@ -132,8 +131,6 @@ export const GenerateLabel: ToolBarControlFC = () => {
     if (!("rows" in group)) return;
 
     const labels = generateLabels({ pattern: data.pattern, amount: 100 });
-
-    let count = 0;
 
     if (data.direction === "right")
       group.rows.forEach((row) => {

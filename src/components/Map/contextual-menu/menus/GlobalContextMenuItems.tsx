@@ -5,7 +5,7 @@ import React from "react";
 export const GlobalContextMenuItems: React.FC = () => {
   const editor = useMapEditor();
 
-  const handleAddGroup = (event: React.MouseEvent) => {
+  const handleAddGroup = () => {
     editor?.addGroup({
       x: 0,
       y: 0,
@@ -13,7 +13,7 @@ export const GlobalContextMenuItems: React.FC = () => {
     });
   };
 
-  const handleAddText = (event: React.MouseEvent) => {
+  const handleAddText = () => {
     editor?.addText({
       text: "New text",
       x: 0,
@@ -22,7 +22,7 @@ export const GlobalContextMenuItems: React.FC = () => {
     });
   };
 
-  const handleAddIcon = (event: React.MouseEvent) => {
+  const handleAddIcon = () => {
     editor?.addIcon({
       icon: { set: "lucide", icon: "Clock" },
       x: 0,

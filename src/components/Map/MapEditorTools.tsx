@@ -58,6 +58,7 @@ const toolsForType: Record<SelectionTargetType, Tool[]> = {
   ],
   text: ["textColor", "fontSize", "fontFamily"],
   icon: ["color", "icon", "fontSize"],
+  row: undefined as never,
 };
 
 const ToolsToComponents: Record<
@@ -103,7 +104,7 @@ const ToolsToComponents: Record<
     icon: { set: "lucide", icon: "Text" },
     component: GenerateLabel,
   },
-};
+} as unknown as Record<Tool, { icon: IconValue; component: ToolBarControlFC }>;
 
 export const MapEditorTools: React.FC = () => {
   const editor = useMapEditor();
@@ -147,10 +148,10 @@ export const MapEditorTools: React.FC = () => {
       itemValues.current[event.id] = event[event.targetType]!;
 
       const values = allowedTools.reduce((acc, tool) => {
-        return { ...acc, [tool]: event[event.targetType]![tool] };
+        return { ...acc, [tool]: event[event.targetType as never]![tool] };
       }, {});
 
-      setValues(values);
+      setValues(values as never);
     };
 
     const _layers: Record<string, string> = {};
@@ -159,13 +160,13 @@ export const MapEditorTools: React.FC = () => {
         const target = editor?.getItem(key);
         _layers[target?.id || ""] = getItemLabel(target) || "";
         if (!target) return acc;
-        return target[tool] || acc;
+        return target[tool as never] || acc;
       }, undefined);
 
       return { ...acc, [tool]: toolValue };
     }, {});
 
-    setValues(values);
+    setValues(values as never);
     setLayers(Object.entries(_layers).map(([id, label]) => ({ id, label })));
 
     if (

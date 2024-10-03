@@ -56,13 +56,9 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
   const [dragStartPositions, setDragStartPositions] =
     React.useState<ItemPositions>();
 
-  const [groupsInYPosition, setGroupsInYPosition] = React.useState<
-    Record<number, number>
-  >([]);
+  const [, setGroupsInYPosition] = React.useState<Record<number, number>>([]);
 
-  const [groupsInXPosition, setGroupsInXPosition] = React.useState<
-    Record<number, number>
-  >([]);
+  const [, setGroupsInXPosition] = React.useState<Record<number, number>>([]);
 
   const [areaSize, setAreaSize] = React.useState<{
     width: number;
