@@ -2,6 +2,7 @@ import { EditorViews } from "@/components/EditorViews";
 import { MapEditorProvider } from "@/components/Map/providers/MapEditorProvider/MapEditorProvider";
 import { MapIcon, MapText, SpotGroup as ISpotGroup } from "./types";
 import "./App.css";
+import React from "react";
 
 const spotGroups: ISpotGroup[] = [
   /*  {
@@ -345,6 +346,39 @@ const texts: MapText[] = [
 const icons: MapIcon[] = [];
 
 function App() {
+  const [logged, setLogged] = React.useState(false);
+  const [password, setPassword] = React.useState("");
+
+  const handleLogin = () => {
+    if (password === "thetacticway") {
+      setLogged(true);
+      return;
+    }
+
+    alert("Wrong password");
+  };
+
+  if (!logged) {
+    return (
+      <form onSubmit={handleLogin}>
+        <div className={"flex justify-center p-20"}>
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            className={"px-2"}
+            type="password"
+            placeholder="Password"
+          />
+          <button
+            type={"submit"}
+            className={"bg-primary p-2 rounded-md text-primary-foreground"}
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    );
+  }
+
   return (
     <MapEditorProvider
       value={{
