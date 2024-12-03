@@ -346,7 +346,7 @@ const texts: MapText[] = [
 const icons: MapIcon[] = [];
 
 function App() {
-  const [logged, setLogged] = React.useState(false);
+  const [logged, setLogged] = React.useState(true);
   const [password, setPassword] = React.useState("");
 
   const handleLogin = () => {

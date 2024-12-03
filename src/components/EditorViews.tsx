@@ -5,6 +5,7 @@ import { MapEditorTools } from "@/components/Map/MapEditorTools";
 import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
 import { cn } from "@/helpers/cn";
 import React from "react";
+import { FloatingToolbar } from "@/components/editor/toolbars/FloatingToolbar";
 
 export const EditorViews: React.FC = () => {
   const editor = useMapEditor();
@@ -30,6 +31,7 @@ export const EditorViews: React.FC = () => {
     <div
       className={cn("grid h-screen grid-rows-[60px,1fr] grid-cols-[360px,1fr]")}
     >
+      <FloatingToolbar />
       <div
         className={"flex w-full border-b border-input shadow-md relative"}
         style={{ gridRow: "1 / 2", gridColumn: "1 / -1" }}

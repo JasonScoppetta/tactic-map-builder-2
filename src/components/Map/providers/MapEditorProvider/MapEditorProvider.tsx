@@ -17,6 +17,7 @@ import {
   ItemPosition,
   ItemPositions,
   MainMouseTool,
+  MapEditorState,
   MapIcon,
   MapText,
   SelectionTarget,
@@ -925,51 +926,66 @@ export const MapEditorProvider: React.FC<MapEditorProviderProps> = (props) => {
     events.processQueue();
   }, 1);
 
+  const editorState = {
+    ...rest,
+    value: mapState,
+    draggingGroup,
+    guides: draggingGuides,
+    selection,
+    events,
+    selectedMainTool,
+    zoom,
+    viewMode,
+    areaSize,
+
+    // Methods
+    moveItem,
+    startDraggingItem,
+    endDraggingItem,
+    updateSelection,
+    clearSelection,
+    addSpot,
+    addRow,
+    addText,
+    addIcon,
+    addGroup,
+    updateItem,
+    updateGroup,
+    updateSpot,
+    updateText,
+    updateRow,
+    updateIcon,
+    getSpot,
+    getItem,
+    isItemSelected,
+    updateItemPosition,
+    setMainMouseTool: setSelectedMainTool,
+    setZoom,
+    deleteSpot,
+    deleteRow,
+    deleteGroup,
+    deleteText,
+    deleteIcon,
+    setViewMode,
+    setAreaSize: (width, height) => {
+      setAreaSize({ width, height });
+    },
+  } satisfies MapEditorState;
+
   return (
     <MapEditorContext.Provider
       value={{
-        ...rest,
-        value: mapState,
-        draggingGroup,
-        guides: draggingGuides,
-        selection,
-        events,
-        selectedMainTool,
-        zoom,
-        viewMode,
-        areaSize,
-
-        // Methods
-        moveItem,
-        startDraggingItem,
-        endDraggingItem,
-        updateSelection,
-        clearSelection,
-        addSpot,
-        addRow,
-        addText,
-        addIcon,
-        addGroup,
-        updateItem,
-        updateGroup,
-        updateSpot,
-        updateText,
-        updateRow,
-        updateIcon,
-        getSpot,
-        getItem,
-        isItemSelected,
-        updateItemPosition,
-        setMainMouseTool: setSelectedMainTool,
-        setZoom,
-        deleteSpot,
-        deleteRow,
-        deleteGroup,
-        deleteText,
-        deleteIcon,
-        setViewMode,
-        setAreaSize: (width, height) => {
-          setAreaSize({ width, height });
+        ...editorState,
+        setMainMouseTool: (value) => {
+          setSelectedMainTool(value);
+          events.dispatchEvent({
+            event: "tool-change",
+            id: "*",
+            state: {
+              ...editorState,
+              selectedMainTool: value,
+            },
+          });
         },
       }}
     >

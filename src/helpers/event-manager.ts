@@ -1,4 +1,5 @@
 import {
+  MapEditorState,
   MapIcon,
   MapText,
   SelectionTargetType,
@@ -7,12 +8,13 @@ import {
   SpotRow,
 } from "@/types";
 
-export type EventType = "update" | "delete" | "add";
+export type EventType = "update" | "delete" | "add" | "tool-change";
 
 export interface MapEditorEventData {
   event: EventType;
   targetType?: SelectionTargetType;
   id?: EventResourceId;
+  state?: MapEditorState;
   spot?: SpotItem;
   group?: SpotGroup;
   text?: MapText;

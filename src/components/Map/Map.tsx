@@ -1,11 +1,11 @@
-import {useMapEditor} from "@/components/Map/providers/MapEditorProvider/context";
-import {MapValue} from "@/types";
+import { useMapEditor } from "@/components/Map/providers/MapEditorProvider/context";
+import { MapValue } from "@/types";
 import React from "react";
 import { MapProvider } from "./providers/MapProvider/MapProvider";
-import { MapSvg } from "./MapSvg";
+import { MapCanvas } from "@/components/Map/MapCanvas";
 
 export interface MapProps {
-    value?: MapValue;
+  value?: MapValue;
 }
 
 export const Map = React.forwardRef<SVGSVGElement, MapProps>(
@@ -13,7 +13,7 @@ export const Map = React.forwardRef<SVGSVGElement, MapProps>(
     const { value } = props;
     const editor = useMapEditor();
     const mapValue = editor?.value || value;
-    if(!mapValue) return <>No map state provided</>
+    if (!mapValue) return <>No map state provided</>;
 
     return (
       <MapProvider
@@ -22,7 +22,7 @@ export const Map = React.forwardRef<SVGSVGElement, MapProps>(
           gridSize: mapValue.gridSize || 20,
         }}
       >
-        <MapSvg ref={ref} />
+        <MapCanvas ref={ref} />
       </MapProvider>
     );
   },
